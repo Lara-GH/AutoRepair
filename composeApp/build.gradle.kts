@@ -1,5 +1,4 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -40,6 +39,14 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.koin)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.bottomSheetNavigator)
+        }
+        iosMain.dependencies {
+
         }
     }
 }
@@ -58,6 +65,12 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     packaging {
         resources {

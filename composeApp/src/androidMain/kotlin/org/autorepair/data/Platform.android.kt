@@ -1,3 +1,5 @@
+package org.autorepair.data
+
 import android.os.Build
 
 class AndroidPlatform : Platform {

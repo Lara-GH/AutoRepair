@@ -1,3 +1,5 @@
+package org.autorepair.data
+
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
