@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.mokoResources)
 }
 
 kotlin {
@@ -14,7 +15,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -25,25 +26,31 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
-        androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.ui)
+                @OptIn(ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+                implementation(libs.voyager.navigator)
+                implementation(libs.voyager.koin)
+                implementation(libs.voyager.transitions)
+                implementation(libs.voyager.tabNavigator)
+                implementation(libs.voyager.bottomSheetNavigator)
+                implementation(libs.moko.resources.compose)
+            }
         }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.koin)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.tabNavigator)
-            implementation(libs.voyager.bottomSheetNavigator)
+
+        val androidMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.compose.ui.tooling.preview)
+                implementation(libs.androidx.activity.compose)
+            }
         }
         iosMain.dependencies {
 
@@ -88,6 +95,16 @@ android {
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
+        debugImplementation(libs.compose.ui.tooling.preview)
+        implementation(libs.compose.ui.tooling.preview.android)
     }
+}
+
+multiplatformResources{
+    multiplatformResourcesPackage = "org.autorepair" // required
+//    multiplatformResourcesClassName = "SharedRes" // optional, default MR
+//    multiplatformResourcesVisibility = MRVisibility.Internal // optional, default Public
+    iosBaseLocalizationRegion = "en" // optional, default "en"
+//    multiplatformResourcesSourceSet = "commonClientMain"  // optional, default "commonMain"
 }
 

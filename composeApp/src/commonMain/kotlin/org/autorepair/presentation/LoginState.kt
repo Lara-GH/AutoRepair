@@ -5,7 +5,9 @@ data class LoginState(
     val email: String,
     val pass: String,
     val isLoading: Boolean,
-    val error: Throwable?
+    val error: Throwable?,
+    val isIncorrectData: Boolean,
+    val navigateToMain: Boolean
 ) {
     companion object {
         val Init = LoginState(
@@ -13,7 +15,9 @@ data class LoginState(
             email = "",
             pass = "",
             isLoading = false,
-            error = null
+            error = null,
+            isIncorrectData = false,
+            navigateToMain = false
         )
     }
 }
