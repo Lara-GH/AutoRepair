@@ -1,4 +1,4 @@
-package org.autorepair.presentation
+package org.autorepair.presentation.login
 
 data class LoginState(
     val formEnabled: Boolean,

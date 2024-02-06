@@ -17,6 +17,8 @@ junit = "4.13.2"
 kotlin = "1.9.22"
 voyager = "1.0.0-rc10"
 mokoResources = "0.23.0"
+firebase-auth = "1.10.4"
+firebase = "4.3.14"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -43,9 +45,12 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "mokoResources" }
 moko-resources = { module = "dev.icerock.moko:resources", version.ref = "mokoResources" }
 
+firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-auth" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 mokoResources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "mokoResources" }
+firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }

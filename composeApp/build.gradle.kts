@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.mokoResources)
+    alias(libs.plugins.firebase)
 }
 
 kotlin {
@@ -42,6 +43,7 @@ kotlin {
                 implementation(libs.voyager.tabNavigator)
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.moko.resources.compose)
+                implementation(libs.firebase.auth)
             }
         }
 

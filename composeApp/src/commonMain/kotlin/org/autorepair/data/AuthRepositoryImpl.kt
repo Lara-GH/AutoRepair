@@ -1,20 +1,42 @@
 package org.autorepair.data
 
+import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.delay
 import org.autorepair.data.models.IncorrectDataException
 import org.autorepair.data.models.User
 
-class AuthRepositoryImpl: AuthRepository {
-    override suspend fun auth(email: String, password: String): Result<User> {
-        delay(1000)
-        //try catch { result.failure }
+class AuthRepositoryImpl(
+    private val auth: FirebaseAuth = FirebaseAuthHolder.auth
+): AuthRepository {
 
-        if(email == "123" && password == "123") {
-            return Result.success(User(1))
+    //gomellora@gmail.com
+    //Qaz12345
+    override suspend fun auth(email: String, password: String): Result<User> {
+        return runCatching {
+            val result = auth.signInWithEmailAndPassword(email, password)
+            val resultUser = result.user
+            if(resultUser != null) {
+                return Result.success(User(resultUser.uid))
+            } else {
+                return Result.failure(IncorrectDataException())
+            }
+        }.onFailure {
+            if(it is FirebaseAuthInvalidUserException) {
+                return Result.failure(IncorrectDataException())
+            }
+
         }
-        if(email == "123" && password != "123") {
-            return Result.failure(IncorrectDataException())
+    }
+
+    override suspend fun getCurrentUser(): Result<User?> {
+        return runCatching {
+            val firebaseUser = auth.currentUser
+            firebaseUser?.let { User(firebaseUser.uid) }
         }
-        return Result.failure(Exception("testException"))
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        return runCatching { auth.signOut() }
     }
 }

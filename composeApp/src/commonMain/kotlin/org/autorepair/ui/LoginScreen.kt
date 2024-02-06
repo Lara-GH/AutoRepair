@@ -31,7 +31,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -41,7 +40,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.fontFamilyResource
 import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
-import org.autorepair.presentation.LoginScreenModel
+import org.autorepair.presentation.login.LoginEvent
+import org.autorepair.presentation.login.LoginScreenModel
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 object LoginScreen : Screen {
@@ -89,13 +89,11 @@ fun Screen.LoginScreenContent(
     }
 
     LaunchedEffect(true) {
-        //прислать как реализовать events одноразовые
-//        screenModel.events.collect { event ->
-//            when(event) {
-//                is NavigateToMain -> navigator.push(MainScreen)
-//                is ShowToast -> toast()
-//            }
-//        }
+        screenModel.events.collect { event ->
+            when(event) {
+                is LoginEvent.NavigateToMain -> navigator.replace(MainScreen)
+            }
+        }
     }
 }
 

@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "952874702580",
+    "firebase_url": "https://autorepair-b4f91-default-rtdb.firebaseio.com",
+    "project_id": "autorepair-b4f91",
+    "storage_bucket": "autorepair-b4f91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952874702580:android:e9ae67ac5a00a17f44f0a1",
+        "android_client_info": {
+          "package_name": "com.laragh.autorepair"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952874702580-ohn93j517s2j3vqf1af146n4khpkl12s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG74sI3qKM59BgdI2wPhTcRuNuvNhzWTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952874702580-ohn93j517s2j3vqf1af146n4khpkl12s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952874702580:android:b005204dc3c3da8944f0a1",
+        "android_client_info": {
+          "package_name": "org.autorepair"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952874702580-ohn93j517s2j3vqf1af146n4khpkl12s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG74sI3qKM59BgdI2wPhTcRuNuvNhzWTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952874702580-ohn93j517s2j3vqf1af146n4khpkl12s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952874702580:android:04a49cfd6727b97144f0a1",
+        "android_client_info": {
+          "package_name": "org.autorepair.kmp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952874702580-ohn93j517s2j3vqf1af146n4khpkl12s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG74sI3qKM59BgdI2wPhTcRuNuvNhzWTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952874702580-ohn93j517s2j3vqf1af146n4khpkl12s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
