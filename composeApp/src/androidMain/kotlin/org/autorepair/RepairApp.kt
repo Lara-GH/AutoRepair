@@ -2,7 +2,7 @@ package org.autorepair
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
-import org.autorepair.kmp.di.initKoin
+import org.autorepair.di.initKoin
 
 class RepairApp: Application() {
 

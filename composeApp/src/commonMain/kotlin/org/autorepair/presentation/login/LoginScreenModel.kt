@@ -39,7 +39,7 @@ class LoginScreenModel(
             val state = mutableState.value
             authRepository.auth(email = state.email, password = state.pass)
                 .onSuccess {
-                    mutableEvent.emit(LoginEvent.NavigateToMain)
+                    mutableEvent.emit(LoginEvent.NavigateToHome)
                 }
                 .onFailure {
                     mutableState.value = mutableState.value.copy(

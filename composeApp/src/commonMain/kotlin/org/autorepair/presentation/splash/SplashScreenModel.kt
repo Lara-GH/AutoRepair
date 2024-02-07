@@ -20,7 +20,7 @@ class SplashScreenModel(
             runCatching {
                 val user = authRepository.getCurrentUser().getOrNull()
                 val event = if (user != null) {
-                    SplashEvent.NavigateToMain
+                    SplashEvent.NavigateToHome
                 } else {
                     SplashEvent.NavigateToLogin
                 }

@@ -104,7 +104,7 @@ fun Screen.SignUpContent() {
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
-                is SignUpEvent.NavigateToMain -> navigator.replace(MainScreen)
+                is SignUpEvent.NavigateToHome -> navigator.replace(HomeScreen)
                 is SignUpEvent.NavigateToLogin -> navigator.pop()
             }
         }

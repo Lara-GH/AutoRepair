@@ -1,5 +1,6 @@
-package org.autorepair.kmp.di
+package org.autorepair.di
 
+import org.autorepair.presentation.home.HomeScreenModel
 import org.autorepair.presentation.splash.SplashScreenModel
 import org.koin.dsl.module
 
@@ -8,4 +9,6 @@ val viewModelModule = module {
     factory { SplashScreenModel(
         authRepository = get()
     ) }
+
+    factory { HomeScreenModel() }
 }

@@ -22,7 +22,7 @@ class SignUpScreenModel() : StateScreenModel<SignUpState>(SignUpState.Init) {
 
     fun onSignUpClick() {
         screenModelScope.launch {
-            mutableEvent.emit(SignUpEvent.NavigateToMain)
+            mutableEvent.emit(SignUpEvent.NavigateToHome)
         }
     }
 

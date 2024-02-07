@@ -109,7 +109,7 @@ fun Screen.LoginScreenContent(
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
-                is LoginEvent.NavigateToMain -> navigator.replace(MainScreen)
+                is LoginEvent.NavigateToHome -> navigator.replace(HomeScreen)
                 is LoginEvent.NavigateToSignUp -> navigator.push(AddCarScreen)
             }
         }
