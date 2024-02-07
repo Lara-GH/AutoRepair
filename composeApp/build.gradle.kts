@@ -44,6 +44,8 @@ kotlin {
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.moko.resources.compose)
                 implementation(libs.firebase.auth)
+                implementation(libs.firebase.database)
+                implementation(libs.firebase.storage)
                 implementation(libs.serialization.json)
                 implementation(compose.material3)
             }

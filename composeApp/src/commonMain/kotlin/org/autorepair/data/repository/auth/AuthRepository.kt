@@ -1,4 +1,4 @@
-package org.autorepair.data
+package org.autorepair.data.repository.auth
 
 import org.autorepair.data.models.User
 

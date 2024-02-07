@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.data.AuthRepository
-import org.autorepair.data.AuthRepositoryImpl
+import org.autorepair.data.repository.auth.AuthRepository
+import org.autorepair.data.repository.auth.AuthRepositoryImpl
 
 class SplashScreenModel(
     private val authRepository: AuthRepository = AuthRepositoryImpl()

@@ -23,7 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -44,25 +48,17 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.fontFamilyResource
 import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import org.autorepair.MR
 import org.autorepair.presentation.login.LoginEvent
 import org.autorepair.presentation.login.LoginScreenModel
 
 object LoginScreen : Screen {
-
     @Composable
     override fun Content() {
         LoginScreenContent()
     }
 }
+
 @Composable
 fun Screen.LoginScreenContent(
 ) {
@@ -86,6 +82,8 @@ fun Screen.LoginScreenContent(
             LoginForm(
                 enabled = state.formEnabled,
                 isLoading = state.isLoading,
+                email = state.email,
+                password = state.pass,
                 isIncorrectData = state.isIncorrectData,
                 onEmailChange = screenModel::onEmailChanged,
                 onPasswordChange = { screenModel.onPassChanged(it) },
@@ -126,13 +124,13 @@ enum class FocusedField {
 fun LoginForm(
     enabled: Boolean,
     isLoading: Boolean,
+    email: String,
+    password: String,
     isIncorrectData: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
     val loginTypography = Typography(
         body1 = TextStyle(
             fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
@@ -173,7 +171,7 @@ fun LoginForm(
                 },
                 enabled = enabled,
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { onEmailChange(it) },
                 label = {
                     Text(
                         text = stringResource(MR.strings.email),
@@ -210,7 +208,7 @@ fun LoginForm(
                 visualTransformation = PasswordVisualTransformation(),
                 enabled = enabled,
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { onPasswordChange(it) },
                 label = {
                     Text(
                         text = stringResource(MR.strings.password),

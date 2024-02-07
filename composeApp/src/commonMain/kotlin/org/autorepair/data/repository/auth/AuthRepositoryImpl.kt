@@ -1,12 +1,13 @@
-package org.autorepair.data
+package org.autorepair.data.repository.auth
 
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
+import org.autorepair.data.FirebaseHolder
 import org.autorepair.data.models.IncorrectDataException
 import org.autorepair.data.models.User
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuth = FirebaseAuthHolder.auth
+    private val auth: FirebaseAuth = FirebaseHolder.auth
 ) : AuthRepository {
 
     //gomellora@gmail.com
