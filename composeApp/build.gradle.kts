@@ -56,6 +56,7 @@ kotlin {
             dependencies {
                 implementation(libs.compose.ui.tooling.preview)
                 implementation(libs.androidx.activity.compose)
+                implementation("com.google.firebase:firebase-database-ktx:20.3.0")
             }
         }
         val iosX64Main by getting

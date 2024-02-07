@@ -30,6 +30,9 @@ class LoginScreenModel(
 
     fun onLoginClick() {
         screenModelScope.launch {
+
+            carRepository.getCarHierarchy()
+
             mutableState.value = mutableState.value.copy(
                 isLoading = true,
                 isIncorrectData = false,
