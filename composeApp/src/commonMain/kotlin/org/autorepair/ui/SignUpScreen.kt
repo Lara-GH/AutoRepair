@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -23,17 +22,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -44,29 +49,20 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.fontFamilyResource
 import dev.icerock.moko.resources.compose.stringResource
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import org.autorepair.MR
-import org.autorepair.presentation.login.LoginEvent
-import org.autorepair.presentation.login.LoginScreenModel
+import org.autorepair.presentation.signup.SignUpEvent
+import org.autorepair.presentation.signup.SignUpScreenModel
 
-object LoginScreen : Screen {
-
+object SignUpScreen : Screen {
     @Composable
     override fun Content() {
-        LoginScreenContent()
+        SignUpContent()
     }
 }
+
 @Composable
-fun Screen.LoginScreenContent(
-) {
-    val screenModel = rememberScreenModel { LoginScreenModel() }
+fun Screen.SignUpContent() {
+    val screenModel = rememberScreenModel { SignUpScreenModel() }
     val state by screenModel.state.collectAsState()
 
     val navigator = LocalNavigator.currentOrThrow
@@ -82,17 +78,17 @@ fun Screen.LoginScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            LoginHeader(modifier = Modifier.padding(bottom = 50.dp, top = 150.dp))
-            LoginForm(
+            SignUpHeader(modifier = Modifier.padding(bottom = 50.dp, top = 150.dp))
+            SignUpForm(
                 enabled = state.formEnabled,
                 isLoading = state.isLoading,
                 isIncorrectData = state.isIncorrectData,
                 onEmailChange = screenModel::onEmailChanged,
                 onPasswordChange = { screenModel.onPassChanged(it) },
-                onLoginClick = screenModel::onLoginClick
+                onSignUpClick = screenModel::onSignUpClick
             )
-            LoginFooter(
-                onSignUpClick = screenModel::onSingUpClick
+            SignUpFooter(
+                onSignInClick = screenModel::onSignInClick
             )
 
             if (state.isIncorrectData) {
@@ -108,31 +104,26 @@ fun Screen.LoginScreenContent(
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
-                is LoginEvent.NavigateToMain -> navigator.replace(MainScreen)
-                is LoginEvent.NavigateToSignUp -> navigator.push(SignUpScreen)
+                is SignUpEvent.NavigateToMain -> navigator.replace(MainScreen)
+                is SignUpEvent.NavigateToLogin -> navigator.pop()
             }
         }
     }
 }
 
-enum class FocusedField {
-    EMAIL,
-    PASSWORD,
-    CONFIRMPASSWORD,
-    NONE
-}
-
 @Composable
-fun LoginForm(
+fun SignUpForm(
     enabled: Boolean,
     isLoading: Boolean,
     isIncorrectData: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onLoginClick: () -> Unit
+    onSignUpClick: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+
     val loginTypography = Typography(
         body1 = TextStyle(
             fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
@@ -227,13 +218,50 @@ fun LoginForm(
                 )
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        WrapCard(focusedField.value == FocusedField.CONFIRMPASSWORD) {
+            TextField(
+                modifier = Modifier.fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .onFocusChanged {
+                        if (it.isFocused) focusedField.value = FocusedField.CONFIRMPASSWORD
+                    },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = "Localized description",
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.outline,
+                    )
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                enabled = enabled,
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = {
+                    Text(
+                        text = stringResource(MR.strings.confirm_password),
+                        style = loginTypography.body2
+                    )
+                },
+                singleLine = true,
+                textStyle = loginTypography.body1,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             onClick = {
-                onLoginClick()
+                onSignUpClick()
             }
         ) {
             Row(
@@ -242,7 +270,7 @@ fun LoginForm(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = stringResource(MR.strings.login2),
+                    text = stringResource(MR.strings.sign_up2),
                     color = MaterialTheme.colorScheme.background,
                     style = TextStyle(
                         fontFamily = fontFamilyResource(MR.fonts.Montserrat.semiBold),
@@ -266,16 +294,7 @@ fun LoginForm(
 }
 
 @Composable
-fun WrapCard(shouldWrap: Boolean, content: @Composable () -> Unit) {
-    if (shouldWrap) {
-        Card(elevation = 10.dp) { content() }
-    } else {
-        content()
-    }
-}
-
-@Composable
-fun LoginHeader(
+fun SignUpHeader(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -285,22 +304,14 @@ fun LoginHeader(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
             fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
-            text = stringResource(MR.strings.login_header_title)
-        )
-
-        Spacer(modifier = Modifier.height(6.dp))
-        Text(
-            modifier = Modifier,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.secondary,
-            fontFamily = fontFamilyResource(MR.fonts.Montserrat.semiBold),
-            text = stringResource(MR.strings.login_header_subtitle)
+            text = stringResource(MR.strings.create_account)
         )
     }
 }
 
+
 @Composable
-fun LoginFooter(onSignUpClick: () -> Unit) {
+fun SignUpFooter(onSignInClick: () -> Unit) {
 
     Row(
         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -310,23 +321,25 @@ fun LoginFooter(onSignUpClick: () -> Unit) {
     ) {
         ClickableText(
             modifier = Modifier.padding(end = 5.dp),
-            text = AnnotatedString(stringResource(MR.strings.dont_have_an_account)),
+            text = AnnotatedString(stringResource(MR.strings.already_have_an_account)),
             style = TextStyle(
-                color = MaterialTheme.colorScheme.secondary,
-                fontFamily = fontFamilyResource(MR.fonts.Montserrat.bold)
+                color = MaterialTheme.colorScheme.secondary, fontFamily = fontFamilyResource(
+                    MR.fonts.Montserrat.bold
+                )
             ),
             onClick = {
-                onSignUpClick()
+                onSignInClick()
             }
         )
         ClickableText(
-            text = AnnotatedString(stringResource(MR.strings.sign_up)),
+            text = AnnotatedString(stringResource(MR.strings.sign_in)),
             style = TextStyle(
-                color = MaterialTheme.colorScheme.primary,
-                fontFamily = fontFamilyResource(MR.fonts.Montserrat.bold)
+                color = MaterialTheme.colorScheme.primary, fontFamily = fontFamilyResource(
+                    MR.fonts.Montserrat.bold
+                )
             ),
             onClick = {
-                onSignUpClick()
+                onSignInClick()
             }
         )
     }

@@ -2,4 +2,20 @@
 <resources>
     <string name="login_header_title">Login</string>
     <string name="login_header_subtitle">Please, sign in to continue</string>
+    <string name="email">EMAIL</string>
+    <string name="password">PASSWORD</string>
+    <string name="confirm_password">CONFIRM PASSWORD</string>
+    <string name="login">Login</string>
+    <string name="login2">LOGIN</string>
+    <string name="dont_have_an_account">Dont have an account?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_up2">SIGN UP</string>
+    <string name="sign_in">Sign in</string>
+    <string name="create_account">Create Account</string>
+    <string name="add_your_car">Add your car</string>
+    <string name="add_car">ADD CAR</string>
+    <string name="book_a_service">Book a Service</string>
+    <string name="add_a_car">Add a Car</string>
+    <string name="contact_to_bodyshop">Contact to BodyShop</string>
 </resources>
