@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.mokoResources)
     alias(libs.plugins.firebase)
+    kotlin("plugin.serialization") version "1.9.21"
 }
 
 kotlin {
@@ -48,6 +49,11 @@ kotlin {
                 implementation(libs.firebase.storage)
                 implementation(libs.serialization.json)
                 implementation(compose.material3)
+                implementation(libs.ktor.core)
+                implementation(libs.ktor.serialization)
+                implementation(libs.ktor.contentNegotiation)
+                implementation(libs.ktor.logging)
+                implementation(libs.ktor.utils)
             }
         }
 
@@ -57,6 +63,7 @@ kotlin {
                 implementation(libs.compose.ui.tooling.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+                implementation(libs.ktor.androidClient)
             }
         }
         val iosX64Main by getting
@@ -67,6 +74,9 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies{
+                implementation(libs.ktor.iosClient)
+            }
         }
     }
 }
