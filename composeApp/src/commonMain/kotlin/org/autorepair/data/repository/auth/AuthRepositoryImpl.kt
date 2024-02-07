@@ -7,7 +7,7 @@ import org.autorepair.data.models.IncorrectDataException
 import org.autorepair.data.models.User
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuth = FirebaseHolder.auth
+    private val auth: FirebaseAuth
 ) : AuthRepository {
 
     //gomellora@gmail.com

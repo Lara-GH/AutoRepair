@@ -6,15 +6,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.data.repository.auth.AuthRepository
-import org.autorepair.data.repository.auth.AuthRepositoryImpl
 import org.autorepair.data.models.IncorrectDataException
+import org.autorepair.data.repository.auth.AuthRepository
 import org.autorepair.data.repository.car.CarRepository
-import org.autorepair.data.repository.car.CarRepositoryImpl
 
 class LoginScreenModel(
-    private val repository: AuthRepository = AuthRepositoryImpl(),
-    private val carRepository: CarRepository = CarRepositoryImpl()
+    private val authRepository: AuthRepository,
+    private val carRepository: CarRepository
 ) : StateScreenModel<LoginState>(LoginState.Init) {
 
     private val mutableEvent: MutableSharedFlow<LoginEvent> = MutableSharedFlow()
@@ -39,7 +37,7 @@ class LoginScreenModel(
                 error = null
             )
             val state = mutableState.value
-            repository.auth(email = state.email, password = state.pass)
+            authRepository.auth(email = state.email, password = state.pass)
                 .onSuccess {
                     mutableEvent.emit(LoginEvent.NavigateToMain)
                 }

@@ -54,6 +54,7 @@ kotlin {
                 implementation(libs.ktor.contentNegotiation)
                 implementation(libs.ktor.logging)
                 implementation(libs.ktor.utils)
+                implementation(libs.koin.core)
             }
         }
 
@@ -64,6 +65,7 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation("com.google.firebase:firebase-database-ktx:20.3.0")
                 implementation(libs.ktor.androidClient)
+                implementation(libs.koin.android)
             }
         }
         val iosX64Main by getting

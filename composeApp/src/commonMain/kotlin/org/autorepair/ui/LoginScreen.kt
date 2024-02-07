@@ -44,8 +44,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.fontFamilyResource
@@ -65,7 +65,7 @@ object LoginScreen : Screen {
 @Composable
 fun Screen.LoginScreenContent(
 ) {
-    val screenModel = rememberScreenModel { LoginScreenModel() }
+    val screenModel = getScreenModel<LoginScreenModel>()
     val state by screenModel.state.collectAsState()
 
     val navigator = LocalNavigator.currentOrThrow

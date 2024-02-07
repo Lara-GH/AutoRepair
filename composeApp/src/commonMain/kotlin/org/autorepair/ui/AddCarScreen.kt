@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,10 +44,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import dev.icerock.moko.resources.compose.fontFamilyResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
+import org.autorepair.presentation.addcar.AddCarScreenModel
 
 object AddCarScreen : Screen {
     @Composable
@@ -58,6 +61,9 @@ object AddCarScreen : Screen {
 @Composable
 fun Screen.AddCarScreenContent(
 ) {
+    val screenModel = getScreenModel<AddCarScreenModel>()
+    val state by screenModel.state.collectAsState()
+
     Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight()
             .background(color = MaterialTheme.colorScheme.background),
@@ -68,17 +74,19 @@ fun Screen.AddCarScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+
+
             Spacer(modifier = Modifier.height(135.dp))
             AddCarImage()
             AddCarHeader(modifier = Modifier.padding(bottom = 25.dp))
-            Dropdown("Year")
+            YearDropdown(screenModel)
             Spacer(modifier = Modifier.height(7.dp))
-            Dropdown("Make")
+            MakeDropdown(screenModel)
             Spacer(modifier = Modifier.height(7.dp))
-            Dropdown("Model")
+            ModelDropdown(screenModel)
             Spacer(modifier = Modifier.height(7.dp))
-            Dropdown("Engine")
-            AddCarButton()
+            EngineDropdown(screenModel)
+            AddCarButton(onClick = { state.show = true })
         }
     }
 }
@@ -115,10 +123,63 @@ fun AddCarHeader(
 }
 
 @Composable
-fun Dropdown(label: String) {
-    val options = listOf("Honda", "Toyota", "BMW", "Tesla", "Dodge")
+fun YearDropdown(
+    screenModel: AddCarScreenModel
+) {
+
+    Dropdown(
+        "Year",
+        screenModel.getYearsList(),
+        isClickable = true,
+        onItemSelected = screenModel::onYearSelected
+    )
+}
+
+@Composable
+fun MakeDropdown(screenModel: AddCarScreenModel) {
+    val isClickable = screenModel.selectedYear.value != null
+
+    Dropdown(
+        "Make",
+        screenModel.getManufacturersList(),
+        isClickable,
+        onItemSelected = screenModel::onManufacturerSelected
+    )
+}
+
+@Composable
+fun ModelDropdown(screenModel: AddCarScreenModel) {
+    val isClickable = screenModel.selectedManufacturer.value != null
+
+    Dropdown(
+        "Model",
+        screenModel.getModelsList(),
+        isClickable,
+        onItemSelected = screenModel::onModelSelected
+    )
+}
+
+@Composable
+fun EngineDropdown(screenModel: AddCarScreenModel) {
+    val isClickable = screenModel.selectedModel.value != null
+
+    Dropdown(
+        "Engine",
+        screenModel.getEnginesList(),
+        isClickable,
+        onItemSelected = screenModel::onEngineSelected
+    )
+}
+
+@Composable
+fun Dropdown(
+    label: String,
+    list: List<String>,
+    isClickable: Boolean,
+    onItemSelected: (String) -> Unit
+) {
+    val options = list
     val expanded = remember { mutableStateOf(false) }
-//    val selectedOptionText = remember { mutableStateOf(options[0]) }
     val selectedOptionText = remember { mutableStateOf(label) }
     var textfieldSize by remember { mutableStateOf(Size.Zero) }
 
@@ -144,12 +205,13 @@ fun Dropdown(label: String) {
                 //This value is used to assign to the DropDown the same width
                 textfieldSize = coordinates.size.toSize()
             }
-            .clickable {
+            .clickable(enabled = isClickable) {
                 expanded.value = !expanded.value
                 color = primary
                 stroke = dp2
-            },
+            }
     ) {
+
         Text(
             text = selectedOptionText.value,
             fontSize = 14.sp,
@@ -176,6 +238,7 @@ fun Dropdown(label: String) {
                 DropdownMenuItem(
                     onClick = {
                         selectedOptionText.value = selectionOption
+                        onItemSelected(selectionOption)
                         expanded.value = false
                         color = onPrimary
                         textColor =
@@ -191,7 +254,7 @@ fun Dropdown(label: String) {
 }
 
 @Composable
-fun AddCarButton() {
+fun AddCarButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -199,7 +262,7 @@ fun AddCarButton() {
         Button(
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-            onClick = {},
+            onClick = { onClick() },
             shape = RoundedCornerShape(5.dp)
         ) {
             Row(
