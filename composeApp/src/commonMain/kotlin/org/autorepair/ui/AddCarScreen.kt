@@ -50,6 +50,7 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
 import org.autorepair.presentation.addcar.AddCarScreenModel
+import androidx.compose.ui.graphics.ColorFilter
 
 object AddCarScreen : Screen {
     @Composable
@@ -96,12 +97,13 @@ fun AddCarImage(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier.height(150.dp).width(205.dp)
+        modifier = Modifier.height(100.dp).width(180.dp)
     ) {
         Image(
-            painter = painterResource(MR.images.ic_car),
+            painter = painterResource(MR.images.car4),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
     }
 }
@@ -115,7 +117,7 @@ fun AddCarHeader(
             modifier = Modifier,
             fontSize = 25.sp,
             color = MaterialTheme.colorScheme.onPrimary,
-            fontFamily = fontFamilyResource(MR.fonts.Montserrat.medium),
+            fontFamily = fontFamilyResource(MR.fonts.Montserrat.bold),
             text = stringResource(MR.strings.add_your_car),
             textAlign = TextAlign.Center
         )

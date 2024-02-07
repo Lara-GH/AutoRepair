@@ -82,7 +82,7 @@ fun Body(screenModel: HomeScreenModel) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             label = stringResource(MR.strings.add_a_car),
-            painter = painterResource(MR.images.car3),
+            painter = painterResource(MR.images.car4),
             onClick = screenModel::onAddCarClick
         )
         Spacer(modifier = Modifier.height(16.dp))
