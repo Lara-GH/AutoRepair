@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.data.AuthRepository
-import org.autorepair.data.AuthRepositoryImpl
-import org.autorepair.data.models.IncorrectDataException
+//import org.autorepair.data.AuthRepository
+//import org.autorepair.data.AuthRepositoryImpl
+//import org.autorepair.data.models.IncorrectDataException
 
 class LoginScreenModel(
-    private val repository: AuthRepository = AuthRepositoryImpl()
+//    private val repository: AuthRepository = AuthRepositoryImpl()
 ) : StateScreenModel<LoginState>(LoginState.Init) {
 
     private val mutableEvent: MutableSharedFlow<LoginEvent> = MutableSharedFlow()
@@ -33,16 +33,16 @@ class LoginScreenModel(
                 error = null
             )
             val state = mutableState.value
-            repository.auth(email = state.email, password = state.pass)
-                .onSuccess {
-                    mutableEvent.emit(LoginEvent.NavigateToMain)
-                }
-                .onFailure {
-                    mutableState.value = mutableState.value.copy(
-                        error = it,
-                        isIncorrectData = it is IncorrectDataException
-                    )
-                }
+//            repository.auth(email = state.email, password = state.pass)
+//                .onSuccess {
+//                    mutableEvent.emit(LoginEvent.NavigateToMain)
+//                }
+//                .onFailure {
+//                    mutableState.value = mutableState.value.copy(
+//                        error = it,
+//                        isIncorrectData = it is IncorrectDataException
+//                    )
+//                }
 
             mutableState.value = mutableState.value.copy(isLoading = false)
         }

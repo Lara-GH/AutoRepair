@@ -44,6 +44,8 @@ kotlin {
                 implementation(libs.voyager.bottomSheetNavigator)
                 implementation(libs.moko.resources.compose)
                 implementation(libs.firebase.auth)
+                implementation(libs.serialization.json)
+                implementation(compose.material3)
             }
         }
 
@@ -54,8 +56,14 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
             }
         }
-        iosMain.dependencies {
-
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
         }
     }
 }
