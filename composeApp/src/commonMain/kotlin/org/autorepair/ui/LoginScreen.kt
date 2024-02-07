@@ -2,6 +2,7 @@ package org.autorepair.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -53,6 +55,7 @@ import org.autorepair.presentation.login.LoginEvent
 import org.autorepair.presentation.login.LoginScreenModel
 
 object LoginScreen : Screen {
+
     @Composable
     override fun Content() {
         LoginScreenContent()
@@ -107,7 +110,7 @@ fun Screen.LoginScreenContent(
         screenModel.events.collect { event ->
             when (event) {
                 is LoginEvent.NavigateToMain -> navigator.replace(MainScreen)
-                is LoginEvent.NavigateToSignUp -> navigator.push(SignUpScreen)
+                is LoginEvent.NavigateToSignUp -> navigator.push(AddCarScreen)
             }
         }
     }
@@ -143,7 +146,14 @@ fun LoginForm(
             fontWeight = FontWeight.ExtraBold,
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.outline
-        )
+        ),
+        h1 = TextStyle(
+            fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.outline,
+            baselineShift = BaselineShift(-2f)
+        ),
     )
 
     Column(
@@ -153,21 +163,29 @@ fun LoginForm(
     ) {
 
         val focusedField = remember { mutableStateOf(FocusedField.NONE) }
+        val textStyle = remember { mutableStateOf(loginTypography.h1) }
 
         WrapCard(focusedField.value == FocusedField.EMAIL) {
             TextField(
                 modifier = Modifier.fillMaxWidth()
                     .background(color = MaterialTheme.colorScheme.background)
                     .onFocusChanged {
-                        if (it.isFocused) focusedField.value = FocusedField.EMAIL
+                        if (it.isFocused) {
+                            focusedField.value = FocusedField.EMAIL
+                            textStyle.value = loginTypography.body2
+                        }
                     },
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Email,
-                        contentDescription = "Localized description",
-                        modifier = Modifier.size(22.dp),
-                        tint = MaterialTheme.colorScheme.outline
-                    )
+                    BoxWithConstraints(
+                        modifier = Modifier.padding(top = 18.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Email,
+                            contentDescription = "Localized description",
+                            modifier = Modifier.size(22.dp),
+                            tint = MaterialTheme.colorScheme.outline
+                        )
+                    }
                 },
                 enabled = enabled,
                 value = email,
@@ -175,7 +193,7 @@ fun LoginForm(
                 label = {
                     Text(
                         text = stringResource(MR.strings.email),
-                        style = loginTypography.body2
+                        style = textStyle.value
                     )
                 },
                 singleLine = true,
@@ -225,6 +243,7 @@ fun LoginForm(
                 )
             )
         }
+
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(
