@@ -15,7 +15,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -41,34 +40,12 @@ import org.autorepair.MR
 import org.autorepair.presentation.home.HomeEvent
 import org.autorepair.presentation.home.HomeScreenModel
 
-object HomeScreen : Screen {
-    @Composable
-    override fun Content() {
-        MainScreenContent()
-    }
-}
-
 @Composable
-fun Screen.MainScreenContent() {
+fun Screen.HomeContent(){
+    val parentNavigator = LocalNavigator.currentOrThrow.parent ?: error("No parent navigator")
     val screenModel = getScreenModel<HomeScreenModel>()
     val state by screenModel.state.collectAsState()
-    val navigator = LocalNavigator.currentOrThrow
 
-    Body(screenModel)
-
-    LaunchedEffect(true) {
-        screenModel.events.collect { event ->
-            when (event) {
-                is HomeEvent.NavigateToBookService -> navigator.replace(HomeScreen)
-                is HomeEvent.NavigateToAddCar -> navigator.push(AddCarScreen)
-                is HomeEvent.NavigateToChat -> navigator.replace(HomeScreen)
-            }
-        }
-    }
-}
-
-@Composable
-fun Body(screenModel: HomeScreenModel) {
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,17 +69,23 @@ fun Body(screenModel: HomeScreenModel) {
             onClick = screenModel::onContactToBodyshopClick
         )
     }
-}
 
+    LaunchedEffect(true) {
+        screenModel.events.collect { event ->
+            when (event) {
+                is HomeEvent.NavigateToBookService -> parentNavigator.push(AddCarScreen)
+                is HomeEvent.NavigateToAddCar -> parentNavigator.push(AddCarScreen)
+                is HomeEvent.NavigateToChat -> parentNavigator.push(AddCarScreen)
+            }
+        }
+    }
+}
 @Composable
-fun Button(label: String, painter: Painter, onClick: () -> Unit) {
-    Button(
+fun Button(label: String,  painter: Painter, onClick: () -> Unit){
+    androidx.compose.material3.Button(
         modifier = Modifier.fillMaxWidth().height(100.dp),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 10.dp,
-            pressedElevation = 0.dp
-        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp, pressedElevation = 0.dp),
         shape = RoundedCornerShape(5.dp),
         onClick = { onClick() }
     ) {

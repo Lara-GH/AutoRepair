@@ -55,12 +55,12 @@ import androidx.compose.ui.graphics.ColorFilter
 object AddCarScreen : Screen {
     @Composable
     override fun Content() {
-        AddCarScreenContent()
+        AddCarContent()
     }
 }
 
 @Composable
-fun Screen.AddCarScreenContent(
+fun Screen.AddCarContent(
 ) {
     val screenModel = getScreenModel<AddCarScreenModel>()
     val state by screenModel.state.collectAsState()

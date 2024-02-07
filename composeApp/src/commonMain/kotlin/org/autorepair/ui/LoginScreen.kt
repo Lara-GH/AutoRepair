@@ -58,12 +58,12 @@ object LoginScreen : Screen {
 
     @Composable
     override fun Content() {
-        LoginScreenContent()
+        LoginContent()
     }
 }
 
 @Composable
-fun Screen.LoginScreenContent(
+fun Screen.LoginContent(
 ) {
     val screenModel = getScreenModel<LoginScreenModel>()
     val state by screenModel.state.collectAsState()
@@ -109,7 +109,7 @@ fun Screen.LoginScreenContent(
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
-                is LoginEvent.NavigateToHome -> navigator.replace(HomeScreen)
+                is LoginEvent.NavigateToHome -> navigator.replace(TabScreen)
                 is LoginEvent.NavigateToSignUp -> navigator.push(AddCarScreen)
             }
         }

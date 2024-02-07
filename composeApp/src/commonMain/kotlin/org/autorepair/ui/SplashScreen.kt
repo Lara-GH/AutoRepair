@@ -37,7 +37,7 @@ fun Screen.SplashContent() {
         screenModel.events.collect {
             when (it) {
                 SplashEvent.NavigateToLogin -> navigator.replace(LoginScreen)
-                SplashEvent.NavigateToHome -> navigator.replace(HomeScreen)
+                SplashEvent.NavigateToHome -> navigator.replace(TabScreen)
             }
         }
     }
