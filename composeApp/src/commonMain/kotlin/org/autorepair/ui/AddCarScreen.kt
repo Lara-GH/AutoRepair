@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
@@ -51,6 +52,8 @@ import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
 import org.autorepair.presentation.addcar.AddCarScreenModel
 import androidx.compose.ui.graphics.ColorFilter
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 
 object AddCarScreen : Screen {
     @Composable
@@ -65,10 +68,15 @@ fun Screen.AddCarContent(
     val screenModel = getScreenModel<AddCarScreenModel>()
     val state by screenModel.state.collectAsState()
 
+    val navigator = LocalNavigator.currentOrThrow
+
     Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
+
+        CloseButton(onClick = { navigator.replace(TabScreen) })
+
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp)
                 .background(color = MaterialTheme.colorScheme.background),
@@ -76,8 +84,7 @@ fun Screen.AddCarContent(
             verticalArrangement = Arrangement.Top
         ) {
 
-
-            Spacer(modifier = Modifier.height(135.dp))
+            Spacer(modifier = Modifier.height(90.dp))
             AddCarImage()
             AddCarHeader(modifier = Modifier.padding(bottom = 25.dp))
             YearDropdown(screenModel)
@@ -88,14 +95,13 @@ fun Screen.AddCarContent(
             Spacer(modifier = Modifier.height(7.dp))
             EngineDropdown(screenModel)
             AddCarButton(onClick = { state.show = true })
+
         }
     }
 }
 
 @Composable
-fun AddCarImage(
-    modifier: Modifier = Modifier
-) {
+fun AddCarImage() {
     Box(
         modifier = Modifier.height(100.dp).width(180.dp)
     ) {
@@ -281,5 +287,22 @@ fun AddCarButton(onClick: () -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CloseButton(onClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.TopStart,
+        modifier = Modifier.padding(25.dp)
+    ) {
+        Image(
+            painter = painterResource(MR.images.close_button),
+            contentDescription = null,
+            modifier = Modifier
+                .size(20.dp)
+                .background(MaterialTheme.colorScheme.background)
+                .clickable { onClick() }
+        )
     }
 }
