@@ -110,7 +110,7 @@ fun Screen.LoginContent(
         screenModel.events.collect { event ->
             when (event) {
                 is LoginEvent.NavigateToHome -> navigator.replace(TabScreen)
-                is LoginEvent.NavigateToSignUp -> navigator.push(AddCarScreen)
+                is LoginEvent.NavigateToSignUp -> navigator.push(SignUpScreen)
             }
         }
     }
@@ -268,7 +268,9 @@ fun LoginForm(
                     )
                 )
                 if (isLoading) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.background
+                    )
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Icon(

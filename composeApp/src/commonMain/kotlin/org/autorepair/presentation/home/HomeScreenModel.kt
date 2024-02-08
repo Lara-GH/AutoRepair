@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class HomeScreenModel(): StateScreenModel<HomeState>(HomeState.Init)  {
+class HomeScreenModel : StateScreenModel<HomeState>(HomeState.Init)  {
 
     private val mutableEvent: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
     val events: SharedFlow<HomeEvent> = mutableEvent.asSharedFlow()

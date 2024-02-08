@@ -1,4 +1,4 @@
-package org.autorepair.kmp.ui.theme
+package org.autorepair.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

@@ -16,8 +16,7 @@ val authModule = module {
     }
 
     factory { LoginScreenModel(
-        authRepository = get(),
-        carRepository = get()
+        authRepository = get()
     ) }
 
 }

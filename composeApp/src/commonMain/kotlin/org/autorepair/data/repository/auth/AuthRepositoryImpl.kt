@@ -2,7 +2,6 @@ package org.autorepair.data.repository.auth
 
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
-import org.autorepair.data.FirebaseHolder
 import org.autorepair.data.models.IncorrectDataException
 import org.autorepair.data.models.User
 
