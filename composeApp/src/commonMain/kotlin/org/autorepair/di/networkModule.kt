@@ -1,4 +1,4 @@
-package org.autorepair.kmp.di
+package org.autorepair.di
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

@@ -1,6 +1,6 @@
-package org.autorepair.data.repository.auth
+package org.autorepair.domian.repository
 
-import org.autorepair.data.models.User
+import org.autorepair.domian.models.User
 
 interface AuthRepository {
     suspend fun auth(email: String, password: String) : Result<User>

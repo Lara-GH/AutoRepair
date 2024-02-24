@@ -1,24 +1,26 @@
-package org.autorepair.data.repository.car
+package org.autorepair.data.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.Json
-import org.autorepair.data.FirebaseHolder
-import org.autorepair.data.models.Car
 import org.autorepair.data.models.Engine
 import org.autorepair.data.models.Manufacturer
 import org.autorepair.data.models.ManufacturerModels
 import org.autorepair.data.models.Model
 import org.autorepair.data.models.Year
-import org.autorepair.data.models.YearManufacturers
 import org.autorepair.data.models.YearManufacturesNew
+import org.autorepair.data.storages.UserCache
+import org.autorepair.domian.models.Car
+import org.autorepair.domian.models.UserCar
+import org.autorepair.domian.models.YearManufacturers
+import org.autorepair.domian.repository.CarRepository
 
 class CarRepositoryImpl(
-    private val firebaseHolder: FirebaseHolder,
     private val ktorClient: HttpClient,
-    private val json: Json
+    private val json: Json,
+    private val userCache: UserCache
 ) : CarRepository {
     override suspend fun getCarHierarchy(): Result<YearManufacturers> {
         val carsUrl =
@@ -73,5 +75,24 @@ class CarRepositoryImpl(
 
     override suspend fun addCarsToUsers(cars: List<Car>): Result<Unit> {
         return Result.success(Unit)
+    }
+    override suspend fun selectCar(id: String): Result<Unit> {
+        return try {
+            userCache.setSelectedCarId(id)
+            Result.success(Unit)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun getSelectedCar(): Result<UserCar?> {
+        val car = userCache.getSelectedCar()
+        return Result.success(car)
+    }
+
+    override suspend fun getSelectedCarId(): Result<String?> {
+        //handle error
+        val carId = userCache.getSelectedCarId()
+        return Result.success(carId)
     }
 }

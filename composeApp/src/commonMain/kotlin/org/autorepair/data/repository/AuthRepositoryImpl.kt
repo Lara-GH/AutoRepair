@@ -1,9 +1,10 @@
-package org.autorepair.data.repository.auth
+package org.autorepair.data.repository
 
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import org.autorepair.data.models.IncorrectDataException
-import org.autorepair.data.models.User
+import org.autorepair.domian.models.User
+import org.autorepair.domian.repository.AuthRepository
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuth

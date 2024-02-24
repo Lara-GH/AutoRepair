@@ -55,6 +55,7 @@ kotlin {
                 implementation(libs.ktor.logging)
                 implementation(libs.ktor.utils)
                 implementation(libs.koin.core)
+                implementation(libs.datastore)
             }
         }
 

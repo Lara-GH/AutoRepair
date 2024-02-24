@@ -7,8 +7,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.autorepair.data.models.Manufacturer
 import org.autorepair.data.models.Year
-import org.autorepair.data.models.YearManufacturers
-import org.autorepair.data.repository.car.CarRepository
+import org.autorepair.domian.models.YearManufacturers
+import org.autorepair.domian.repository.CarRepository
 
 class AddCarScreenModel(
     private val carRepository: CarRepository
@@ -46,9 +46,19 @@ class AddCarScreenModel(
 
     fun onYearSelected(year: String) {
         _selectedYear.value = year
+
+        screenModelScope.launch {
+            carRepository.selectCar(year)
+        }
     }
 
     fun getManufacturersList(): List<String> {
+
+        screenModelScope.launch {
+            val id = carRepository.getSelectedCarId().getOrNull()
+            println("id = $id")
+        }
+
         val year: String = selectedYear.value ?: ""
 
         return carHierarchyState.value?.yearToManufacturerMap

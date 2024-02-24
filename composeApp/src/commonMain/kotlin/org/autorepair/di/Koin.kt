@@ -1,11 +1,11 @@
 package org.autorepair.di
 
-import org.autorepair.kmp.di.authModule
-import org.autorepair.kmp.di.carModule
-import org.autorepair.kmp.di.networkModule
+import org.autorepair.di.features.authModule
+import org.autorepair.di.features.carModule
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 
-fun initKoin(){
+fun initKoin(modules: List<Module> = emptyList()){
     startKoin{
         modules(
             carModule,
@@ -13,5 +13,8 @@ fun initKoin(){
             authModule,
             viewModelModule
         )
+        modules(platformModules() + modules)
     }
 }
+
+expect fun platformModules(): List<Module>
