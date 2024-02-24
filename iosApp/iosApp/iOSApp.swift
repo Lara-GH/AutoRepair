@@ -7,7 +7,7 @@ struct iOSApp: App {
 
     init(){
         FirebaseApp.configure()
-        KoinKt.doInitKoin()
+        KoinKt.doInitKoinIos()
       }
 	var body: some Scene {
 		WindowGroup {

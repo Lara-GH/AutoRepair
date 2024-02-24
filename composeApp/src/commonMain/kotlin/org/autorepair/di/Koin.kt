@@ -5,8 +5,8 @@ import org.autorepair.di.features.carModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 
-fun initKoin(modules: List<Module> = emptyList()){
-    startKoin{
+fun initKoin(modules: List<Module> = emptyList()) {
+    startKoin {
         modules(
             carModule,
             networkModule,
@@ -17,4 +17,5 @@ fun initKoin(modules: List<Module> = emptyList()){
     }
 }
 
+fun initKoinIos() = initKoin()
 expect fun platformModules(): List<Module>

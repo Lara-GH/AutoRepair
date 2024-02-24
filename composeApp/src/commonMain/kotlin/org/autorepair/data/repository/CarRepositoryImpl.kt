@@ -73,7 +73,7 @@ class CarRepositoryImpl(
         return YearManufacturers(yearToManufacturerMap = map)
     }
 
-    override suspend fun addCarsToUsers(cars: List<Car>): Result<Unit> {
+    override suspend fun addCarsToUsers(cars: List<UserCar>): Result<Unit> {
         return Result.success(Unit)
     }
     override suspend fun selectCar(id: String): Result<Unit> {
@@ -86,13 +86,20 @@ class CarRepositoryImpl(
     }
 
     override suspend fun getSelectedCar(): Result<UserCar?> {
-        val car = userCache.getSelectedCar()
-        return Result.success(car)
+        return try {
+            val car = userCache.getSelectedCar()
+            Result.success(car)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
     }
 
     override suspend fun getSelectedCarId(): Result<String?> {
-        //handle error
-        val carId = userCache.getSelectedCarId()
-        return Result.success(carId)
+        return try {
+            val carId = userCache.getSelectedCarId()
+            Result.success(carId)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
     }
 }

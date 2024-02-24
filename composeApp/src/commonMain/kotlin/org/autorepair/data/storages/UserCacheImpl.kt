@@ -5,13 +5,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.autorepair.domian.models.UserCar
 
 class UserCacheImpl(
     private val dataStore: DataStore<Preferences>,
     private val json: Json
-): UserCache {
+) : UserCache {
 
     override suspend fun setSelectedCarId(id: String) {
         dataStore.edit {
@@ -19,29 +20,32 @@ class UserCacheImpl(
         }
     }
 
-    override fun setUserCars(cars: List<UserCar>) {
-        // convert to json string
-        // set string by key
-        TODO("Not yet implemented")
+    override suspend fun setUserCars(cars: List<UserCar>) {
+        val jsonString = json.encodeToString(cars)
+        dataStore.edit {
+            it[userCarsKey] = jsonString
+        }
     }
 
     override suspend fun getSelectedCarId(): String? {
         return dataStore.data.firstOrNull()?.let { it[carIdKey] }
     }
 
-    override fun getSelectedCar(): UserCar? {
-        //getSelectedCarId
-        //get car list
-        // find car by id
-        TODO("Not yet implemented")
+    override suspend fun getSelectedCar(): UserCar? {
+        val selectedCarId = getSelectedCarId() ?: return null
+        return getUserCars().find { it.id == selectedCarId }
     }
 
-    override fun getUserCars(): List<UserCar> {
-        //get car list
-        TODO("Not yet implemented")
+    override suspend fun getUserCars(): List<UserCar> {
+        return dataStore.data
+            .firstOrNull()
+            ?.let { it[userCarsKey] }
+            ?.let { json.decodeFromString<List<UserCar>>(it) }
+            .orEmpty()
     }
 
     companion object {
         val carIdKey = stringPreferencesKey("carId")
+        val userCarsKey = stringPreferencesKey("userCars")
     }
 }
