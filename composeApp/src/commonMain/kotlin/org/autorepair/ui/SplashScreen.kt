@@ -15,6 +15,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.autorepair.presentation.splash.SplashEvent
 import org.autorepair.presentation.splash.SplashScreenModel
+import org.autorepair.ui.mechanic.MechanicTabScreen
 
 object SplashScreen : Screen {
     @Composable
@@ -37,7 +38,8 @@ fun Screen.SplashContent() {
         screenModel.events.collect {
             when (it) {
                 SplashEvent.NavigateToLogin -> navigator.replace(LoginScreen)
-                SplashEvent.NavigateToHome -> navigator.replace(TabScreen)
+                SplashEvent.NavigateToUserHome -> navigator.replace(UserTabScreen)
+                SplashEvent.NavigateToMechanicHome -> navigator.replace(MechanicTabScreen)
             }
         }
     }

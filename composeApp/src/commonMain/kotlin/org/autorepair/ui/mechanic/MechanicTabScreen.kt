@@ -1,4 +1,4 @@
-package org.autorepair.ui
+package org.autorepair.ui.mechanic
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -23,7 +23,7 @@ import dev.icerock.moko.resources.compose.painterResource
 import org.autorepair.MR
 import org.autorepair.ui.navigationbar.AutoRepairTab
 
-object TabScreen: Screen {
+object MechanicTabScreen: Screen {
     @Composable
     override fun Content() {
         TabContent()
@@ -49,10 +49,7 @@ fun Screen.TabContent() {
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
                     TabNavigationItem(AutoRepairTab.HomeTab(painterResource(MR.images.home)))
-                    TabNavigationItem(AutoRepairTab.CarsTab(painterResource(MR.images.car4)))
-                    TabNavigationItem(AutoRepairTab.ChatTab(painterResource(MR.images.chat)))
                     TabNavigationItem(AutoRepairTab.SettingsTab(painterResource(MR.images.settings)))
-                    TabNavigationItem(AutoRepairTab.BodyShopTab(painterResource(MR.images.bodyshop)))
                 }
             },
         )

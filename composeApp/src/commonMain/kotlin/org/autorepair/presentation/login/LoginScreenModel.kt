@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.autorepair.data.models.IncorrectDataException
+import org.autorepair.domian.models.UserRole
 import org.autorepair.domian.repository.AuthRepository
+import org.autorepair.presentation.splash.SplashEvent
 
 class LoginScreenModel(
     private val authRepository: AuthRepository
@@ -35,7 +37,19 @@ class LoginScreenModel(
             val state = mutableState.value
             authRepository.auth(email = state.email, password = state.pass)
                 .onSuccess {
-                    mutableEvent.emit(LoginEvent.NavigateToHome)
+                    print("user = ${it.id} has role = ${it.role}")
+                    val user = authRepository.getCurrentUser().getOrNull()
+                    val event = if (user != null) {
+                        when (user.role) {
+                            UserRole.MANAGER -> LoginEvent.NavigateToUserHome
+                            UserRole.MECHANIC -> LoginEvent.NavigateToMechanicHome
+                            UserRole.USER -> LoginEvent.NavigateToUserHome
+                            // TODO manager home
+                        }
+                    } else {
+                        LoginEvent.NavigateToUserHome
+                    }
+                    mutableEvent.emit(event)
                 }
                 .onFailure {
                     mutableState.value = mutableState.value.copy(

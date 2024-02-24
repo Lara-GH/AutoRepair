@@ -63,8 +63,7 @@ object AddCarScreen : Screen {
 }
 
 @Composable
-fun Screen.AddCarContent(
-) {
+fun Screen.AddCarContent() {
     val screenModel = getScreenModel<AddCarScreenModel>()
     val state by screenModel.state.collectAsState()
 
@@ -75,7 +74,7 @@ fun Screen.AddCarContent(
             .background(color = MaterialTheme.colorScheme.background),
     ) {
 
-        CloseButton(onClick = { navigator.replace(TabScreen) })
+        CloseButton(onClick = { navigator.replace(UserTabScreen) })
 
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp)

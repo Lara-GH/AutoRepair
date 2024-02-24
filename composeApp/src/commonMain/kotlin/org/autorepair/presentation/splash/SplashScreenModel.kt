@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import org.autorepair.domian.models.UserRole
 import org.autorepair.domian.repository.AuthRepository
 
 class SplashScreenModel(
@@ -20,14 +21,18 @@ class SplashScreenModel(
             runCatching {
                 val user = authRepository.getCurrentUser().getOrNull()
                 val event = if (user != null) {
-                    SplashEvent.NavigateToHome
+                    when (user.role) {
+                        UserRole.MANAGER -> SplashEvent.NavigateToUserHome
+                        UserRole.MECHANIC -> SplashEvent.NavigateToMechanicHome
+                        UserRole.USER -> SplashEvent.NavigateToUserHome
+                        // TODO manager home
+                    }
                 } else {
                     SplashEvent.NavigateToLogin
                 }
                 mutableEvent.emit(event)
             }
         }
-
         //TODO handle error
     }
 }

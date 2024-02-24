@@ -53,6 +53,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
 import org.autorepair.presentation.login.LoginEvent
 import org.autorepair.presentation.login.LoginScreenModel
+import org.autorepair.ui.mechanic.MechanicTabScreen
 
 object LoginScreen : Screen {
 
@@ -63,8 +64,7 @@ object LoginScreen : Screen {
 }
 
 @Composable
-fun Screen.LoginContent(
-) {
+fun Screen.LoginContent() {
     val screenModel = getScreenModel<LoginScreenModel>()
     val state by screenModel.state.collectAsState()
 
@@ -109,7 +109,8 @@ fun Screen.LoginContent(
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
-                is LoginEvent.NavigateToHome -> navigator.replace(TabScreen)
+                is LoginEvent.NavigateToUserHome -> navigator.replace(UserTabScreen)
+                is LoginEvent.NavigateToMechanicHome -> navigator.replace(MechanicTabScreen)
                 is LoginEvent.NavigateToSignUp -> navigator.push(SignUpScreen)
             }
         }
