@@ -9,13 +9,6 @@ import org.koin.dsl.module
 
 val carModule = module {
 
-    factory<UserCache> {
-        UserCacheImpl(
-            dataStore = get(),
-            json = get()
-        )
-    }
-
     factory<CarRepository> {
         CarRepositoryImpl(
             ktorClient = get(),

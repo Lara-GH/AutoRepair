@@ -13,6 +13,11 @@ class UserCacheImpl(
     private val dataStore: DataStore<Preferences>,
     private val json: Json
 ) : UserCache {
+    override suspend fun setUserId(id: String) {
+        dataStore.edit {
+            it[userIdKey] = id
+        }
+    }
 
     override suspend fun setSelectedCarId(id: String) {
         dataStore.edit {
@@ -25,6 +30,10 @@ class UserCacheImpl(
         dataStore.edit {
             it[userCarsKey] = jsonString
         }
+    }
+
+    override suspend fun getUserId(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userIdKey] }
     }
 
     override suspend fun getSelectedCarId(): String? {
@@ -45,6 +54,7 @@ class UserCacheImpl(
     }
 
     companion object {
+        val userIdKey = stringPreferencesKey("userId")
         val carIdKey = stringPreferencesKey("carId")
         val userCarsKey = stringPreferencesKey("userCars")
     }

@@ -2,8 +2,8 @@ package org.autorepair.di.features
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import org.autorepair.domian.repository.AuthRepository
 import org.autorepair.data.repository.AuthRepositoryImpl
+import org.autorepair.domian.repository.AuthRepository
 import org.autorepair.presentation.login.LoginScreenModel
 import org.koin.dsl.module
 
@@ -16,7 +16,8 @@ val authModule = module {
     }
 
     factory { LoginScreenModel(
-        authRepository = get()
+        authRepository = get(),
+        userRepository = get()
     ) }
 
 }
