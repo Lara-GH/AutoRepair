@@ -12,10 +12,9 @@ import org.autorepair.data.models.Model
 import org.autorepair.data.models.Year
 import org.autorepair.data.models.YearManufacturesNew
 import org.autorepair.data.storages.UserCache
-import org.autorepair.domian.models.Car
-import org.autorepair.domian.models.UserCar
-import org.autorepair.domian.models.YearManufacturers
-import org.autorepair.domian.repository.CarRepository
+import org.autorepair.domain.models.UserCar
+import org.autorepair.domain.models.YearManufacturers
+import org.autorepair.domain.repository.CarRepository
 
 class CarRepositoryImpl(
     private val ktorClient: HttpClient,

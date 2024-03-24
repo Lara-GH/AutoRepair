@@ -18,11 +18,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +48,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.autorepair.data.models.Message
+import org.autorepair.data.models.chat.FirebaseMessage
+import org.autorepair.domain.models.chat.Message
+import org.autorepair.presentation.chat.ChatEvent
 import org.autorepair.presentation.chat.ChatScreenModel
 
 object ChatScreen : Screen {
@@ -58,6 +66,34 @@ fun Screen.ChatContent() {
     val state by screenModel.state.collectAsState()
     val navigator = LocalNavigator.currentOrThrow
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(true) {
+        screenModel.events.collect {
+            when (it) {
+                ChatEvent.NavigateToLogin -> {
+//                    navigator.popUntilRoot()
+//                    navigator.push(LoginScreen)
+                }
+
+                is ChatEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(it.text)
+                }
+            }
+        }
+    }
+
+    SnackbarHost(hostState = snackbarHostState) {
+        Snackbar {
+            Text(
+                text = it.visuals.message,
+                color = Color.White,
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+
     Box(
         Modifier.fillMaxSize()
     ) {
@@ -66,76 +102,7 @@ fun Screen.ChatContent() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(15.dp))
-            state.message = "Hi! How are you?"
-
-        val messages = state.messages
-
-//            val messages = listOf(
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l1",
-//                    currentDateTime = "17:58",
-//                    userRole = "user",
-//                    isSeen = false,
-//                    message = "Hi! How are you?"
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l2",
-//                    currentDateTime = "17:58",
-//                    userRole = "manager",
-//                    isSeen = false,
-//                    message = "I'm fine."
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l3",
-//                    currentDateTime = "17:58",
-//                    userRole = "user",
-//                    isSeen = false,
-//                    message = "Hi! How are you?"
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l4",
-//                    currentDateTime = "17:58",
-//                    userRole = "manager",
-//                    isSeen = false,
-//                    message = "I'm fine."
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l5",
-//                    currentDateTime = "17:58",
-//                    userRole = "user",
-//                    isSeen = false,
-//                    message = "Hi! How are you?"
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l6",
-//                    currentDateTime = "17:58",
-//                    userRole = "manager",
-//                    isSeen = false,
-//                    message = "I'm fine."
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l7",
-//                    currentDateTime = "17:58",
-//                    userRole = "user",
-//                    isSeen = false,
-//                    message = "Hi! How are you?"
-//                ),
-//                Message(
-//                    userId = "okRIDixabHWg3Nsym9dHhxojq7l8",
-//                    currentDateTime = "17:58",
-//                    userRole = "manager",
-//                    isSeen = false,
-//                    message = "I'm fine."
-//                )
-//            )
-
-            Messages(messages)
-
-
-//        ChatMessage(true, state.message, "17:58")
-//        ChatMessage(false, state.message, "17:58")
-
-
+            Messages(state.messages)
         }
         SendMessageButton(onClick = { screenModel.onSendMessageClick() })
     }

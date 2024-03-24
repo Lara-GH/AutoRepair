@@ -1,6 +1,6 @@
 package org.autorepair.data.storages
 
-import org.autorepair.domian.models.UserCar
+import org.autorepair.domain.models.UserCar
 
 interface UserCache {
     suspend fun setUserId(id: String)

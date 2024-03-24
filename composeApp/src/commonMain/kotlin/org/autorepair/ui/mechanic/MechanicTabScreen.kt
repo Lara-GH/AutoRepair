@@ -49,6 +49,7 @@ fun Screen.TabContent() {
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
                     TabNavigationItem(AutoRepairTab.HomeTab(painterResource(MR.images.home)))
+                    TabNavigationItem(AutoRepairTab.ChatTab(painterResource(MR.images.chat)))
                     TabNavigationItem(AutoRepairTab.SettingsTab(painterResource(MR.images.settings)))
                 }
             },

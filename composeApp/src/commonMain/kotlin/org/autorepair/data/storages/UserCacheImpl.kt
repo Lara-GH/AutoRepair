@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.autorepair.domian.models.UserCar
+import org.autorepair.domain.models.UserCar
 
 class UserCacheImpl(
     private val dataStore: DataStore<Preferences>,

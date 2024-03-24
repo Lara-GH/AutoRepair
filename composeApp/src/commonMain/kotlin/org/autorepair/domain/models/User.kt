@@ -1,4 +1,4 @@
-package org.autorepair.domian.models
+package org.autorepair.domain.models
 
 data class User(
     val id: String,

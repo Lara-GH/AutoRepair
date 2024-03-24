@@ -7,8 +7,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import kotlinx.coroutines.launch
 import org.autorepair.data.models.Manufacturer
 import org.autorepair.data.models.Year
-import org.autorepair.domian.models.YearManufacturers
-import org.autorepair.domian.repository.CarRepository
+import org.autorepair.domain.models.YearManufacturers
+import org.autorepair.domain.repository.CarRepository
 
 class AddCarScreenModel(
     private val carRepository: CarRepository

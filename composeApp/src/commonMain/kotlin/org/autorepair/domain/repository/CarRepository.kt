@@ -1,7 +1,7 @@
-package org.autorepair.domian.repository
+package org.autorepair.domain.repository
 
-import org.autorepair.domian.models.UserCar
-import org.autorepair.domian.models.YearManufacturers
+import org.autorepair.domain.models.UserCar
+import org.autorepair.domain.models.YearManufacturers
 
 interface CarRepository {
     suspend fun getCarHierarchy(): Result<YearManufacturers>

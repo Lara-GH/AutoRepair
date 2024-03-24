@@ -1,4 +1,4 @@
-package org.autorepair.domian.models
+package org.autorepair.domain.models
 
 import kotlinx.serialization.Serializable
 import org.autorepair.data.models.Engine

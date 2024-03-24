@@ -4,9 +4,9 @@ import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import org.autorepair.data.exceptions.IncorrectDataException
-import org.autorepair.domian.models.User
-import org.autorepair.domian.models.UserRole
-import org.autorepair.domian.repository.AuthRepository
+import org.autorepair.domain.models.User
+import org.autorepair.domain.models.UserRole
+import org.autorepair.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuth

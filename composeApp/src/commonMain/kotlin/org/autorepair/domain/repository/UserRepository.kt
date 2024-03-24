@@ -1,4 +1,4 @@
-package org.autorepair.domian.repository
+package org.autorepair.domain.repository
 
 interface UserRepository {
     suspend fun getUserId(): Result<String?>

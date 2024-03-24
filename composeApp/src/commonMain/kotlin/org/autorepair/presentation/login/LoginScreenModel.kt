@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.autorepair.data.exceptions.IncorrectDataException
-import org.autorepair.domian.models.UserRole
-import org.autorepair.domian.repository.AuthRepository
-import org.autorepair.domian.repository.UserRepository
+import org.autorepair.domain.models.UserRole
+import org.autorepair.domain.repository.AuthRepository
+import org.autorepair.domain.repository.UserRepository
 
 class LoginScreenModel(
     private val authRepository: AuthRepository,

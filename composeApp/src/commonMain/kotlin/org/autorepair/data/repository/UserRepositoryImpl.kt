@@ -1,7 +1,7 @@
 package org.autorepair.data.repository
 
 import org.autorepair.data.storages.UserCache
-import org.autorepair.domian.repository.UserRepository
+import org.autorepair.domain.repository.UserRepository
 
 class UserRepositoryImpl(
     private val userCache: UserCache

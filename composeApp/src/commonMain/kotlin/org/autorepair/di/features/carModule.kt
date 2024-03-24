@@ -1,9 +1,7 @@
 package org.autorepair.di.features
 
-import org.autorepair.domian.repository.CarRepository
+import org.autorepair.domain.repository.CarRepository
 import org.autorepair.data.repository.CarRepositoryImpl
-import org.autorepair.data.storages.UserCache
-import org.autorepair.data.storages.UserCacheImpl
 import org.autorepair.presentation.addcar.AddCarScreenModel
 import org.koin.dsl.module
 

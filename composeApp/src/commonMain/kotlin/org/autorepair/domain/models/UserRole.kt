@@ -1,4 +1,4 @@
-package org.autorepair.domian.models
+package org.autorepair.domain.models
 
 enum class UserRole {
     MANAGER,

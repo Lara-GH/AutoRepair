@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.domian.repository.AuthRepository
+import org.autorepair.domain.repository.AuthRepository
 
 class SettingsScreenModel(private val authRepository: AuthRepository) :
     StateScreenModel<SettingsState>(SettingsState.Init) {
