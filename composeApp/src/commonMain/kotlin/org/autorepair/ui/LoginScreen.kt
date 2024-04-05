@@ -2,7 +2,7 @@ package org.autorepair.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,11 +18,11 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,10 +37,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -121,7 +123,7 @@ enum class FocusedField {
     EMAIL,
     PASSWORD,
     CONFIRMPASSWORD,
-    NONE
+    NONE;
 }
 
 @Composable
@@ -164,124 +166,55 @@ fun LoginForm(
     ) {
 
         val focusedField = remember { mutableStateOf(FocusedField.NONE) }
-        val textStyle = remember { mutableStateOf(loginTypography.h1) }
 
-        WrapCard(focusedField.value == FocusedField.EMAIL) {
-            TextField(
-                modifier = Modifier.fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.background)
-                    .onFocusChanged {
-                        if (it.isFocused) {
-                            focusedField.value = FocusedField.EMAIL
-                            textStyle.value = loginTypography.body2
-                        }
-                    },
-                leadingIcon = {
-                    BoxWithConstraints(
-                        modifier = Modifier.padding(top = 18.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Email,
-                            contentDescription = "Localized description",
-                            modifier = Modifier.size(22.dp),
-                            tint = MaterialTheme.colorScheme.outline
-                        )
-                    }
-                },
-                enabled = enabled,
-                value = email,
-                onValueChange = { onEmailChange(it) },
-                label = {
-                    Text(
-                        text = stringResource(MR.strings.email),
-                        style = textStyle.value
-                    )
-                },
-                singleLine = true,
-                textStyle = loginTypography.body1,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                )
+        CustomTextField(
+            modifier = Modifier,
+            focusedField = focusedField.value,
+            onFocusChanged = { field ->
+                if (field == FocusedField.EMAIL) focusedField.value = FocusedField.EMAIL
+            },
+            enabled = enabled,
+            value = email,
+            onValueChange = onEmailChange,
+            labelText = stringResource(MR.strings.email),
+            leadingIcon = Icons.Filled.Lock,
+            textStyle1 = loginTypography.body1,
+            textStyle2 = loginTypography.body2,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary
             )
-        }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
-        WrapCard(focusedField.value == FocusedField.PASSWORD) {
-            TextField(
-                modifier = Modifier.fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.background)
-                    .onFocusChanged {
-                        if (it.isFocused) focusedField.value = FocusedField.PASSWORD
-                    },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = "Localized description",
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.outline,
-                    )
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                enabled = enabled,
-                value = password,
-                onValueChange = { onPasswordChange(it) },
-                label = {
-                    Text(
-                        text = stringResource(MR.strings.password),
-                        style = loginTypography.body2
-                    )
-                },
-                singleLine = true,
-                textStyle = loginTypography.body1,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    cursorColor = MaterialTheme.colorScheme.primary
-                )
+
+        CustomTextField(
+            modifier = Modifier,
+            focusedField = focusedField.value,
+            onFocusChanged = { field ->
+                if (field == FocusedField.PASSWORD) focusedField.value = FocusedField.PASSWORD
+            },
+            enabled = enabled,
+            value = password,
+            onValueChange = onPasswordChange,
+            labelText = stringResource(MR.strings.password),
+            leadingIcon = Icons.Filled.Lock,
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle1 = loginTypography.body1,
+            textStyle2 = loginTypography.body2,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                cursorColor = MaterialTheme.colorScheme.primary
             )
-        }
+        )
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Button(
-            modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-            onClick = {
-                onLoginClick()
-            }
-        ) {
-            Row(
-                modifier = Modifier.padding(5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(MR.strings.login2),
-                    color = MaterialTheme.colorScheme.background,
-                    style = TextStyle(
-                        fontFamily = fontFamilyResource(MR.fonts.Montserrat.semiBold),
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 14.sp,
-                    )
-                )
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.background
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Icon(
-                    imageVector = Icons.Filled.ArrowForward,
-                    contentDescription = "Localized description",
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.background
-                )
-            }
-        }
+        LoginButton(onLoginClick, isLoading)
     }
 }
 
@@ -348,6 +281,88 @@ fun LoginFooter(onSignUpClick: () -> Unit) {
             onClick = {
                 onSignUpClick()
             }
+        )
+    }
+}
+
+@Composable
+fun LoginButton(onLoginClick: () -> Unit, isLoading: Boolean) {
+    Box {
+        Button(
+            modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            onClick = {
+                onLoginClick()
+            }
+        ) {
+            Row(
+                modifier = Modifier.padding(5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(MR.strings.login2),
+                    color = MaterialTheme.colorScheme.background,
+                    style = TextStyle(
+                        fontFamily = fontFamilyResource(MR.fonts.Montserrat.semiBold),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 14.sp,
+                    )
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Icon(
+                    imageVector = Icons.Filled.ArrowForward,
+                    contentDescription = "Localized description",
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.background
+                )
+            }
+        }
+        if (isLoading) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.onSecondary,
+                modifier = Modifier.align(Alignment.Center).size(30.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomTextField(
+    modifier: Modifier = Modifier,
+    focusedField: FocusedField,
+    onFocusChanged: (FocusedField) -> Unit,
+    enabled: Boolean,
+    value: String,
+    onValueChange: (String) -> Unit,
+    labelText: String,
+    leadingIcon: ImageVector,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    textStyle1: TextStyle,
+    textStyle2: TextStyle,
+    colors: TextFieldColors
+) {
+    WrapCard(focusedField == focusedField) {
+        TextField(
+            modifier = modifier.fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.background)
+                .onFocusChanged { onFocusChanged(focusedField) },
+            leadingIcon = {
+                Icon(
+                    imageVector = leadingIcon,
+                    contentDescription = "Localized description",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.outline,
+                )
+            },
+            visualTransformation = visualTransformation,
+            enabled = enabled,
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(text = labelText, style = textStyle2) },
+            singleLine = true,
+            textStyle = textStyle1,
+            colors = colors
         )
     }
 }
