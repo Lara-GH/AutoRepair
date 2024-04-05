@@ -8,12 +8,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.autorepair.data.exceptions.UnathorizedException
-import org.autorepair.data.models.chat.FirebaseMessage
-import org.autorepair.domain.models.chat.Message
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
-import org.autorepair.domain.repository.UserRepository
-import org.autorepair.ui.datetime.DateTime
 
 class ChatScreenModel(
     private val chatRepository: ChatRepository,
@@ -44,8 +40,6 @@ class ChatScreenModel(
                         delay(2000)
                         mutableEvent.emit(ChatEvent.NavigateToLogin)
                     }
-//                    toast
-//                    snackbar
                 }
 
             mutableState.value = mutableState.value.copy(isLoading = false)

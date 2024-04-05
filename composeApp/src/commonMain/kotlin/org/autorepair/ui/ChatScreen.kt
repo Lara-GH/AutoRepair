@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +46,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.autorepair.data.models.chat.FirebaseMessage
 import org.autorepair.domain.models.chat.Message
 import org.autorepair.presentation.chat.ChatEvent
 import org.autorepair.presentation.chat.ChatScreenModel
@@ -64,7 +61,7 @@ object ChatScreen : Screen {
 fun Screen.ChatContent() {
     val screenModel = getScreenModel<ChatScreenModel>()
     val state by screenModel.state.collectAsState()
-    val navigator = LocalNavigator.currentOrThrow
+    val parentNavigator = LocalNavigator.currentOrThrow.parent ?: error("No parent navigator")
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -72,25 +69,14 @@ fun Screen.ChatContent() {
         screenModel.events.collect {
             when (it) {
                 ChatEvent.NavigateToLogin -> {
-//                    navigator.popUntilRoot()
-//                    navigator.push(LoginScreen)
+                    parentNavigator.popUntilRoot()
+                    parentNavigator.replace(LoginScreen)
                 }
 
                 is ChatEvent.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(it.text)
                 }
             }
-        }
-    }
-
-    SnackbarHost(hostState = snackbarHostState) {
-        Snackbar {
-            Text(
-                text = it.visuals.message,
-                color = Color.White,
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center
-            )
         }
     }
 
@@ -105,6 +91,24 @@ fun Screen.ChatContent() {
             Messages(state.messages)
         }
         SendMessageButton(onClick = { screenModel.onSendMessageClick() })
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
+            Snackbar {
+                Text(
+                    modifier = Modifier.fillMaxWidth()
+                        .align(Alignment.Center),
+                    text = it.visuals.message,
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 

@@ -37,15 +37,12 @@ class ChatRepositoryImpl(
         )
 
         return try {
-
-            throw UnathorizedException()
-
             databaseReference.child("chat")
                 .child(message.userId)
                 .child(message.currentDateTime)
                 .setValue(value = message)
             Result.success(Unit)
-        } catch (t: Throwable) {
+        } catch (t: UnathorizedException) {
             Result.failure(t)
         }
     }
