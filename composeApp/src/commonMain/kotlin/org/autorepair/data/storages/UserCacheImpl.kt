@@ -19,6 +19,12 @@ class UserCacheImpl(
         }
     }
 
+    override suspend fun setUserRole(role: String) {
+        dataStore.edit {
+            it[userRoleKey] = role
+        }
+    }
+
     override suspend fun setSelectedCarId(id: String) {
         dataStore.edit {
             it[carIdKey] = id
@@ -34,6 +40,10 @@ class UserCacheImpl(
 
     override suspend fun getUserId(): String? {
         return dataStore.data.firstOrNull()?.let { it[userIdKey] }
+    }
+
+    override suspend fun getUserRole(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userRoleKey] }
     }
 
     override suspend fun getSelectedCarId(): String? {
@@ -55,6 +65,7 @@ class UserCacheImpl(
 
     companion object {
         val userIdKey = stringPreferencesKey("userId")
+        val userRoleKey = stringPreferencesKey("userRole")
         val carIdKey = stringPreferencesKey("carId")
         val userCarsKey = stringPreferencesKey("userCars")
     }

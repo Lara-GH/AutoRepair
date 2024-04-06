@@ -39,6 +39,7 @@ class LoginScreenModel(
             authRepository.auth(email = state.email, password = state.pass)
                 .onSuccess {
                     userRepository.setUserId(it.id)
+                    userRepository.setUserRole(it.role.name)
 
                     print("user = ${it.id} has role = ${it.role}")
 

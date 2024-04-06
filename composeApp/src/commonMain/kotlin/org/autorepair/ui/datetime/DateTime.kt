@@ -1,5 +1,6 @@
 package org.autorepair.ui.datetime
 
 expect object DateTime {
-    fun getFormattedDate(): String
+    fun getCurrentDateTime(): String
+    fun getFormattedDateTime(inputString: String): String
 }

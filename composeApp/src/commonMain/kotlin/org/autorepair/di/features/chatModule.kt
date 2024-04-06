@@ -12,6 +12,7 @@ val chatModule = module {
     factory {
         ChatScreenModel(
             chatRepository = get(),
+            userRepository = get()
         )
     }
 

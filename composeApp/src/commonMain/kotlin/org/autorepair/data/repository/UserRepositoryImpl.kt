@@ -25,4 +25,24 @@ class UserRepositoryImpl(
             Result.failure(t)
         }
     }
+
+    override suspend fun getUserRole(): Result<String?> {
+        return try {
+            val userRole = userCache.getUserRole()
+            println("!!!!!!!!!!!!!!!!!!!!!!!!getUserRole   $userRole")
+            Result.success(userRole)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun setUserRole(role: String): Result<Unit> {
+        return try {
+            userCache.setUserRole(role)
+            println("!!!!!!!!!!!!!!!!!!!!!!!!setUserIRole   $role")
+            Result.success(Unit)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
 }

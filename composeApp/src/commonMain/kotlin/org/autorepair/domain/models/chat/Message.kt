@@ -6,5 +6,6 @@ data class Message(
     val currentDateTime: String,
     val userRole: String,
     val message: String,
-    val isSeen: Boolean
+    val isSeen: Boolean,
+    val isMine: Boolean
 )

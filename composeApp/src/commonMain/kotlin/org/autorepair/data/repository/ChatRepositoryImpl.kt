@@ -24,14 +24,15 @@ class ChatRepositoryImpl(
     ): Result<Unit> {
 
         val userId = userCache.getUserId() ?: return Result.failure(UnathorizedException())
+        val userRole = userCache.getUserRole() ?: return Result.failure(UnathorizedException())
 
-        val currentDateTime = DateTime.getFormattedDate()
+        val currentDateTime = DateTime.getCurrentDateTime()
 
         val message = FirebaseMessage(
-            id = "${currentDateTime}_user", //TODO get user role from user cache
+            id = "${currentDateTime}_${userRole}",
             userId = userId,
             currentDateTime = currentDateTime,
-            userRole = "user",
+            userRole = userRole,
             message = messageText,
             isSeen = false
         )
@@ -65,16 +66,17 @@ class ChatRepositoryImpl(
         )
     }
 
-    private fun FirebaseMessage.mapToDomain(): Message {
+    private suspend fun FirebaseMessage.mapToDomain(): Message {
         return Message(
             id = id.let {
                 it.ifEmpty { "${currentDateTime}_$userId" }
             },
             userId = userId,
-            currentDateTime = currentDateTime,
+            currentDateTime = DateTime.getFormattedDateTime(currentDateTime),
             userRole = userRole,
             message = message,
-            isSeen = isSeen
+            isSeen = isSeen,
+            isMine = userRole == userCache.getUserRole()
         )
     }
 
@@ -82,7 +84,7 @@ class ChatRepositoryImpl(
         val userId = userCache.getUserId() ?: return flowOf()
         return databaseReference.child("chat")
             .child(userId)
-            .limitToLast(3)
+//            .limitToLast(3)
             .childEvents()
 
             .mapNotNull { event ->
