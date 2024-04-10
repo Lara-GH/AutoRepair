@@ -8,22 +8,17 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.autorepair.data.exceptions.UnathorizedException
-import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
-import org.autorepair.domain.repository.UserRepository
 
 class ChatScreenModel(
-    private val chatRepository: ChatRepository,
-    private val userRepository: UserRepository,
+    private val chatRepository: ChatRepository
 ) : StateScreenModel<ChatState>(ChatState.Init) {
 
     private val mutableEvent: MutableSharedFlow<ChatEvent> = MutableSharedFlow()
     val events: SharedFlow<ChatEvent> = mutableEvent.asSharedFlow()
 
     init {
-        myUserRole()
-        mutableState.value = mutableState.value.copy(message = "Hi! How are you?")
         onNewMessagesSubscribe()
     }
 
@@ -35,7 +30,7 @@ class ChatScreenModel(
                 messageText = mutableState.value.message
             )
                 .onSuccess {
-                    println("!!!!!!!!Message sent")
+                    mutableState.value = mutableState.value.copy(message = "")
                 }
                 .onFailure {
                     println("!!!!!!!!!NO Message sent, $it")
@@ -65,13 +60,7 @@ class ChatScreenModel(
         }
     }
 
-    fun myUserRole() {
-        screenModelScope.launch {
-            userRepository.getUserRole().onSuccess {
-                if (it is String) {
-                    mutableState.value = mutableState.value.copy(myUserRole = it)
-                }
-            }
-        }
+    fun onMessageChanged(message: String) {
+        mutableState.value = mutableState.value.copy(message = message)
     }
 }

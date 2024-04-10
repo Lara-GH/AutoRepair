@@ -20,9 +20,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,7 +43,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -56,6 +55,7 @@ import org.autorepair.MR
 import org.autorepair.presentation.login.LoginEvent
 import org.autorepair.presentation.login.LoginScreenModel
 import org.autorepair.ui.mechanic.MechanicTabScreen
+import org.autorepair.ui.theme.CustomTypography
 
 object LoginScreen : Screen {
 
@@ -137,27 +137,7 @@ fun LoginForm(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit
 ) {
-    val loginTypography = Typography(
-        body1 = TextStyle(
-            fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        ),
-        body2 = TextStyle(
-            fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.outline
-        ),
-        h1 = TextStyle(
-            fontFamily = fontFamilyResource(MR.fonts.Montserrat.extraBold),
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.outline,
-            baselineShift = BaselineShift(-2f)
-        ),
-    )
+
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -177,9 +157,9 @@ fun LoginForm(
             value = email,
             onValueChange = onEmailChange,
             labelText = stringResource(MR.strings.email),
-            leadingIcon = Icons.Filled.Lock,
-            textStyle1 = loginTypography.body1,
-            textStyle2 = loginTypography.body2,
+            leadingIcon = Icons.Filled.Email,
+            textStyle1 = CustomTypography().body1,
+            textStyle2 = CustomTypography().body2,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.Transparent,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
@@ -202,8 +182,8 @@ fun LoginForm(
             labelText = stringResource(MR.strings.password),
             leadingIcon = Icons.Filled.Lock,
             visualTransformation = PasswordVisualTransformation(),
-            textStyle1 = loginTypography.body1,
-            textStyle2 = loginTypography.body2,
+            textStyle1 = CustomTypography().body1,
+            textStyle2 = CustomTypography().body2,
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.Transparent,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,

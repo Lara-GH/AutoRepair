@@ -33,16 +33,19 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import dev.icerock.moko.resources.compose.fontFamilyResource
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
 import org.autorepair.presentation.home.HomeEvent
 import org.autorepair.presentation.home.HomeScreenModel
+import org.autorepair.ui.navigationbar.AutoRepairTab
 
 @Composable
 fun Screen.HomeContent(){
     val parentNavigator = LocalNavigator.currentOrThrow.parent ?: error("No parent navigator")
+    val tabNavigator = LocalTabNavigator.current
     val screenModel = getScreenModel<HomeScreenModel>()
     val state by screenModel.state.collectAsState()
 
@@ -70,12 +73,14 @@ fun Screen.HomeContent(){
         )
     }
 
+    val chatPainterResource = painterResource(MR.images.chat)
+
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToBookService -> parentNavigator.push(AddCarScreen)
                 is HomeEvent.NavigateToAddCar -> parentNavigator.push(AddCarScreen)
-                is HomeEvent.NavigateToChat -> parentNavigator.push(AddCarScreen)
+                is HomeEvent.NavigateToChat -> tabNavigator.current = AutoRepairTab.ChatTab(painter = chatPainterResource)
             }
         }
     }
