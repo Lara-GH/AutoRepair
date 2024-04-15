@@ -7,5 +7,6 @@ data class Message(
     val userRole: String,
     val message: String,
     val isSeen: Boolean,
-    val isMine: Boolean
+    val isMine: Boolean,
+    val authorName: String
 )

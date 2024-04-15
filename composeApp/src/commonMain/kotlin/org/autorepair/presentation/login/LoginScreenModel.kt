@@ -19,6 +19,14 @@ class LoginScreenModel(
     private val mutableEvent: MutableSharedFlow<LoginEvent> = MutableSharedFlow()
     val events: SharedFlow<LoginEvent> = mutableEvent.asSharedFlow()
 
+    init {
+        screenModelScope.launch{
+            println("LoginScreenModel created $this!!!!!")
+            println("WELCOME UserID ${userRepository.getUserId()}!!!!!")
+            println("UserRole ${userRepository.getUserRole()}!!!!!")
+        }
+    }
+
     fun onEmailChanged(email: String) {
         mutableState.value = mutableState.value.copy(email = email)
     }
@@ -39,7 +47,7 @@ class LoginScreenModel(
             authRepository.auth(email = state.email, password = state.pass)
                 .onSuccess {
                     userRepository.setUserId(it.id)
-                    userRepository.setUserRole(it.role.name)
+                    userRepository.setUserRole(it.role)
 
                     print("user = ${it.id} has role = ${it.role}")
 
@@ -70,5 +78,11 @@ class LoginScreenModel(
         screenModelScope.launch {
             mutableEvent.emit(LoginEvent.NavigateToSignUp)
         }
+    }
+
+    override fun onDispose(){
+        println()
+        println("onDispose LoginScreenModel!!!!!")
+        super.onDispose()
     }
 }

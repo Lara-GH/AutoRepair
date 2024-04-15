@@ -1,6 +1,7 @@
 package org.autorepair.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,13 +27,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +41,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.compose.stringResource
-import kotlinx.coroutines.launch
 import org.autorepair.MR
 import org.autorepair.presentation.chat.ChatEvent
 import org.autorepair.presentation.chat.ChatScreenModel
@@ -78,9 +76,17 @@ fun Screen.ChatContent() {
         }
     }
 
+    val focusManager = LocalFocusManager.current
+
     Box(
         Modifier.fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
     ) {
+
         Column(
             Modifier.fillMaxWidth().fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -122,7 +128,6 @@ fun Screen.ChatContent() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MessageTextField(
     modifier: Modifier = Modifier,
@@ -132,9 +137,6 @@ fun MessageTextField(
     onClick: () -> Unit
 ) {
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val coroutineScope = rememberCoroutineScope()
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -142,16 +144,7 @@ fun MessageTextField(
         TextField(
             modifier = modifier
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background)
-//            .onFocusChanged { focused ->
-//            if (!focused.isFocused) {
-//                // Скрыть клавиатуру, когда текстовое поле теряет фокус
-//                coroutineScope.launch {
-//                    keyboardController?.hide()
-//                }
-//            }
-//        }
-    ,
+                .background(color = MaterialTheme.colorScheme.background),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Email,

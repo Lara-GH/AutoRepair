@@ -19,6 +19,7 @@ class ChatScreenModel(
     val events: SharedFlow<ChatEvent> = mutableEvent.asSharedFlow()
 
     init {
+        println("ChatScreenModel created $this!!!!!")
         onNewMessagesSubscribe()
     }
 
@@ -26,12 +27,13 @@ class ChatScreenModel(
         screenModelScope.launch {
             mutableState.value = mutableState.value.copy(isLoading = true)
 
+            val messageText = mutableState.value.message
+            mutableState.value = mutableState.value.copy(message = "")
+
             chatRepository.sendMessage(
-                messageText = mutableState.value.message
+                messageText = messageText
             )
-                .onSuccess {
-                    mutableState.value = mutableState.value.copy(message = "")
-                }
+                .onSuccess {}
                 .onFailure {
                     println("!!!!!!!!!NO Message sent, $it")
                     if (it is UnathorizedException) {
@@ -62,5 +64,11 @@ class ChatScreenModel(
 
     fun onMessageChanged(message: String) {
         mutableState.value = mutableState.value.copy(message = message)
+    }
+
+    override fun onDispose() {
+        println()
+        println("onDispose ChatScreenModel!!!!!")
+        super.onDispose()
     }
 }

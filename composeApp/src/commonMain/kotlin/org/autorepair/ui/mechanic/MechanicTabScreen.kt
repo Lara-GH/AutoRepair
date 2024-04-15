@@ -19,8 +19,6 @@ import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import dev.icerock.moko.resources.compose.painterResource
-import org.autorepair.MR
 import org.autorepair.ui.navigationbar.AutoRepairTab
 
 object MechanicTabScreen: Screen {
@@ -33,7 +31,7 @@ object MechanicTabScreen: Screen {
 @Composable
 fun Screen.TabContent() {
     TabNavigator(
-        AutoRepairTab.HomeTab(painterResource(MR.images.home)),
+        AutoRepairTab.HomeTab(),
     ) {
         Scaffold(
             content = { innerPadding ->
@@ -48,9 +46,9 @@ fun Screen.TabContent() {
                 BottomNavigation(
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
-                    TabNavigationItem(AutoRepairTab.HomeTab(painterResource(MR.images.home)))
-                    TabNavigationItem(AutoRepairTab.ChatTab(painterResource(MR.images.chat)))
-                    TabNavigationItem(AutoRepairTab.SettingsTab(painterResource(MR.images.settings)))
+                    TabNavigationItem(AutoRepairTab.HomeTab())
+                    TabNavigationItem(AutoRepairTab.ChatTab())
+                    TabNavigationItem(AutoRepairTab.SettingsTab())
                 }
             },
         )

@@ -15,12 +15,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.CurrentScreen
+import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import dev.icerock.moko.resources.compose.painterResource
-import org.autorepair.MR
 import org.autorepair.ui.navigationbar.AutoRepairTab
 
 object UserTabScreen: Screen {
@@ -32,8 +30,9 @@ object UserTabScreen: Screen {
 
 @Composable
 fun Screen.TabContent() {
+    println("UserTabScreen $this!!!!!!!!!!!!!")
     TabNavigator(
-        AutoRepairTab.HomeTab(painterResource(MR.images.home)),
+        AutoRepairTab.HomeTab(),
     ) {
         Scaffold(
             content = { innerPadding ->
@@ -41,18 +40,18 @@ fun Screen.TabContent() {
                     modifier = Modifier
                         .padding(innerPadding),
                 ) {
-                    CurrentScreen()
+                    CurrentTab()
                 }
             },
             bottomBar = {
                 BottomNavigation(
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
-                    TabNavigationItem(AutoRepairTab.HomeTab(painterResource(MR.images.home)))
-                    TabNavigationItem(AutoRepairTab.CarsTab(painterResource(MR.images.car4)))
-                    TabNavigationItem(AutoRepairTab.ChatTab(painterResource(MR.images.chat)))
-                    TabNavigationItem(AutoRepairTab.SettingsTab(painterResource(MR.images.settings)))
-                    TabNavigationItem(AutoRepairTab.BodyShopTab(painterResource(MR.images.bodyshop)))
+                    TabNavigationItem(AutoRepairTab.HomeTab())
+                    TabNavigationItem(AutoRepairTab.CarsTab())
+                    TabNavigationItem(AutoRepairTab.ChatTab())
+                    TabNavigationItem(AutoRepairTab.SettingsTab())
+                    TabNavigationItem(AutoRepairTab.BodyShopTab())
                 }
             },
         )

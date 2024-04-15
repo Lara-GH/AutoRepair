@@ -14,9 +14,13 @@ class SettingsScreenModel(private val authRepository: AuthRepository) :
     private val mutableEvent: MutableSharedFlow<SettingsEvent> = MutableSharedFlow()
     val events: SharedFlow<SettingsEvent> = mutableEvent.asSharedFlow()
 
+    init {
+        println("StateScreenModel created $this!!!!!")
+    }
+
     fun onLogoutClick() {
         screenModelScope.launch {
-           mutableState.value = mutableState.value.copy(isLoading = true)
+            mutableState.value = mutableState.value.copy(isLoading = true)
             authRepository.logout()
                 .onSuccess {
                     mutableEvent.emit(SettingsEvent.NavigateToLogin)
@@ -28,5 +32,11 @@ class SettingsScreenModel(private val authRepository: AuthRepository) :
                 }
             mutableState.value = mutableState.value.copy(isLoading = false)
         }
+    }
+
+    override fun onDispose() {
+        println()
+        println("onDispose SettingsScreenModel!!!!!")
+        super.onDispose()
     }
 }

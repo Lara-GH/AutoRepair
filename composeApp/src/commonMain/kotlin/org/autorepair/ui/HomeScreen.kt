@@ -73,14 +73,12 @@ fun Screen.HomeContent(){
         )
     }
 
-    val chatPainterResource = painterResource(MR.images.chat)
-
     LaunchedEffect(true) {
         screenModel.events.collect { event ->
             when (event) {
                 is HomeEvent.NavigateToBookService -> parentNavigator.push(AddCarScreen)
                 is HomeEvent.NavigateToAddCar -> parentNavigator.push(AddCarScreen)
-                is HomeEvent.NavigateToChat -> tabNavigator.current = AutoRepairTab.ChatTab(painter = chatPainterResource)
+                is HomeEvent.NavigateToChat -> tabNavigator.current = AutoRepairTab.ChatTab()
             }
         }
     }

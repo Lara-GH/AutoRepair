@@ -12,6 +12,10 @@ class HomeScreenModel : StateScreenModel<HomeState>(HomeState.Init)  {
     private val mutableEvent: MutableSharedFlow<HomeEvent> = MutableSharedFlow()
     val events: SharedFlow<HomeEvent> = mutableEvent.asSharedFlow()
 
+    init {
+        println("HomeScreenModel created $this!!!!!")
+    }
+
     fun onBookServiceClick() {
         screenModelScope.launch {
             mutableEvent.emit(HomeEvent.NavigateToBookService)
@@ -28,5 +32,11 @@ class HomeScreenModel : StateScreenModel<HomeState>(HomeState.Init)  {
         screenModelScope.launch {
             mutableEvent.emit(HomeEvent.NavigateToChat)
         }
+    }
+
+    override fun onDispose(){
+        println()
+        println("onDispose HomeScreenModel!!!!!")
+        super.onDispose()
     }
 }

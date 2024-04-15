@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.autorepair.domain.models.UserCar
+import org.autorepair.domain.models.UserRole
 
 class UserCacheImpl(
     private val dataStore: DataStore<Preferences>,
@@ -19,9 +20,9 @@ class UserCacheImpl(
         }
     }
 
-    override suspend fun setUserRole(role: String) {
+    override suspend fun setUserRole(role: UserRole) {
         dataStore.edit {
-            it[userRoleKey] = role
+            it[userRoleKey] = role.name
         }
     }
 
@@ -42,8 +43,11 @@ class UserCacheImpl(
         return dataStore.data.firstOrNull()?.let { it[userIdKey] }
     }
 
-    override suspend fun getUserRole(): String? {
+    override suspend fun getUserRole(): UserRole? {
         return dataStore.data.firstOrNull()?.let { it[userRoleKey] }
+            ?.let { stringRole ->
+                UserRole.values().find { it.name == stringRole }
+            }
     }
 
     override suspend fun getSelectedCarId(): String? {

@@ -15,8 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,18 +29,9 @@ import org.autorepair.MR
 import org.autorepair.presentation.settings.SettingsEvent
 import org.autorepair.presentation.settings.SettingsScreenModel
 
-object SettingsScreen : Screen {
-    @Composable
-    override fun Content() {
-        SettingsContent()
-    }
-}
-
 @Composable
 fun Screen.SettingsContent() {
-
     val screenModel = getScreenModel<SettingsScreenModel>()
-    val state by screenModel.state.collectAsState()
 
     val parentNavigator = LocalNavigator.currentOrThrow.parent ?: error("No parent navigator")
 

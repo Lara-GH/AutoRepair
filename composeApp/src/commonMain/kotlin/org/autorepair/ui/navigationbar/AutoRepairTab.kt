@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import dev.icerock.moko.resources.compose.painterResource
+import org.autorepair.MR
 import org.autorepair.ui.BodyShopContent
 import org.autorepair.ui.CarsContent
 import org.autorepair.ui.ChatContent
@@ -19,12 +21,12 @@ private fun createTabOptions(title: String, icon: Painter, index: UShort): TabOp
     )
 }
 
-internal sealed class AutoRepairTab {
-    internal class HomeTab(painter: Painter) : Tab {
-        private val _icon = painter
+sealed class AutoRepairTab {
+
+    internal class HomeTab : Tab {
         override val options: TabOptions
             @Composable
-            get() = createTabOptions("Home", _icon, 0u)
+            get() = createTabOptions("Home", painterResource(MR.images.home), 0u)
 
         @Composable
         override fun Content() {
@@ -32,11 +34,10 @@ internal sealed class AutoRepairTab {
         }
     }
 
-    internal class CarsTab(painter: Painter) : Tab {
-        private val _icon = painter
+    internal class CarsTab : Tab {
         override val options: TabOptions
             @Composable
-            get() = createTabOptions("Cars", _icon, 1u)
+            get() = createTabOptions("Cars", painterResource(MR.images.car4), 1u)
 
         @Composable
         override fun Content() {
@@ -44,11 +45,10 @@ internal sealed class AutoRepairTab {
         }
     }
 
-    internal class ChatTab(painter: Painter) : Tab {
-        private val _icon = painter
+    internal class ChatTab : Tab {
         override val options: TabOptions
             @Composable
-            get() = createTabOptions("Chat", _icon, 2u)
+            get() = createTabOptions("Chat", painterResource(MR.images.chat), 2u)
 
         @Composable
         override fun Content() {
@@ -56,11 +56,10 @@ internal sealed class AutoRepairTab {
         }
     }
 
-    internal class SettingsTab(painter: Painter) : Tab {
-        private val _icon = painter
+    internal class SettingsTab : Tab {
         override val options: TabOptions
             @Composable
-            get() = createTabOptions("Settings", _icon, 3u)
+            get() = createTabOptions("Settings", painterResource(MR.images.settings), 3u)
 
         @Composable
         override fun Content() {
@@ -68,11 +67,10 @@ internal sealed class AutoRepairTab {
         }
     }
 
-    internal class BodyShopTab(painter: Painter) : Tab {
-        private val _icon = painter
+    internal class BodyShopTab : Tab {
         override val options: TabOptions
             @Composable
-            get() = createTabOptions("BodyShop", _icon, 4u)
+            get() = createTabOptions("BodyShop", painterResource(MR.images.bodyshop), 4u)
 
         @Composable
         override fun Content() {

@@ -1,6 +1,7 @@
 package org.autorepair.data.repository
 
 import org.autorepair.data.storages.UserCache
+import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.repository.UserRepository
 
 class UserRepositoryImpl(
@@ -26,7 +27,7 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun getUserRole(): Result<String?> {
+    override suspend fun getUserRole(): Result<UserRole?> {
         return try {
             val userRole = userCache.getUserRole()
             println("!!!!!!!!!!!!!!!!!!!!!!!!getUserRole   $userRole")
@@ -36,7 +37,7 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun setUserRole(role: String): Result<Unit> {
+    override suspend fun setUserRole(role: UserRole): Result<Unit> {
         return try {
             userCache.setUserRole(role)
             println("!!!!!!!!!!!!!!!!!!!!!!!!setUserIRole   $role")

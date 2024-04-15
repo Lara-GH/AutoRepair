@@ -37,7 +37,11 @@ fun Messages(messages: List<Message>) {
         ) {
             item { Spacer(Modifier.size(20.dp)) }
             items(messages, key = { it.id }) {
-                ChatMessage(isMyMessage = it.isMine, it.message, it.currentDateTime)
+                ChatMessage(authorName = it.authorName,
+                    isMyMessage = it.isMine,
+                    it.message,
+                    it.currentDateTime
+                )
             }
             item {
                 Box(Modifier.height(70.dp))

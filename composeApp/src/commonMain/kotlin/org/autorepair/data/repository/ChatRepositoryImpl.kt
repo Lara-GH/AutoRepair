@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import org.autorepair.data.exceptions.UnathorizedException
 import org.autorepair.data.models.chat.FirebaseMessage
 import org.autorepair.data.storages.UserCache
+import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.models.chat.Message
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
@@ -32,7 +33,7 @@ class ChatRepositoryImpl(
             id = "${currentDateTime}_${userRole}",
             userId = userId,
             currentDateTime = currentDateTime,
-            userRole = userRole,
+            userRole = userRole.name,
             message = messageText,
             isSeen = false
         )
@@ -67,6 +68,9 @@ class ChatRepositoryImpl(
     }
 
     private suspend fun FirebaseMessage.mapToDomain(): Message {
+
+        val messageUserRole = UserRole.values().find { it.name == userRole }
+
         return Message(
             id = id.let {
                 it.ifEmpty { "${currentDateTime}_$userId" }
@@ -76,8 +80,19 @@ class ChatRepositoryImpl(
             userRole = userRole,
             message = message,
             isSeen = isSeen,
-            isMine = userRole == userCache.getUserRole()
+            isMine = messageUserRole == userCache.getUserRole(),
+            authorName = getAuthorName(userCache.getUserRole(), messageUserRole)
         )
+    }
+
+    private fun getAuthorName(myRole: UserRole?, messageRole: UserRole?): String {
+        return when {
+            myRole == UserRole.USER && messageRole != UserRole.USER -> "BodyShop"
+            myRole == UserRole.MECHANIC && messageRole != UserRole.MECHANIC -> "Manager"
+            else -> "Text for manager"
+            //TODO
+            //            myRole == UserRole.MANAGER && messageRole != UserRole.MECHANIC -> "Manager"
+        }
     }
 
     override suspend fun observeCurrentUserChatEvents(): Flow<ObserveChatEvent> {

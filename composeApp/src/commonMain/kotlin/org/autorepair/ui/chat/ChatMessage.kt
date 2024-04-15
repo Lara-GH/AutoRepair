@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ChatMessage(isMyMessage: Boolean, message: String, currentDateTime: String) {
+fun ChatMessage( authorName: String, isMyMessage: Boolean, message: String, currentDateTime: String) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = if (isMyMessage) Alignment.CenterEnd else Alignment.CenterStart
@@ -56,7 +56,7 @@ fun ChatMessage(isMyMessage: Boolean, message: String, currentDateTime: String) 
                         if (!isMyMessage) {
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = "BodyShop",
+                                    text = authorName,
                                     style = MaterialTheme.typography.bodyMedium
                                         .copy(
                                             fontWeight = FontWeight.SemiBold,
