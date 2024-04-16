@@ -23,7 +23,7 @@ private fun createTabOptions(title: String, icon: Painter, index: UShort): TabOp
 
 sealed class AutoRepairTab {
 
-    internal class HomeTab : Tab {
+    object HomeTab : Tab {
         override val options: TabOptions
             @Composable
             get() = createTabOptions("Home", painterResource(MR.images.home), 0u)
@@ -45,7 +45,7 @@ sealed class AutoRepairTab {
         }
     }
 
-    internal class ChatTab : Tab {
+    object ChatTab : Tab {
         override val options: TabOptions
             @Composable
             get() = createTabOptions("Chat", painterResource(MR.images.chat), 2u)

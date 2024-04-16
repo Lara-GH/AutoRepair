@@ -3,8 +3,10 @@ package org.autorepair.data.repository
 import dev.gitlive.firebase.database.ChildEvent
 import dev.gitlive.firebase.database.DatabaseReference
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.take
 import kotlinx.serialization.json.Json
 import org.autorepair.data.exceptions.UnathorizedException
 import org.autorepair.data.models.chat.FirebaseMessage
@@ -43,10 +45,37 @@ class ChatRepositoryImpl(
                 .child(message.userId)
                 .child(message.currentDateTime)
                 .setValue(value = message)
+
+            notifyAnotherSide(userId, userRole, messageText)
+
             Result.success(Unit)
         } catch (t: UnathorizedException) {
             Result.failure(t)
         }
+    }
+
+    private suspend fun notifyAnotherSide(userId: String, role: UserRole, message: String) {
+        if(role == UserRole.USER) {
+            val managerToken = getManagerToken() ?: return
+            println("manager token = $managerToken")
+            sendNotificationToToken(managerToken, message)
+        } else {
+            //TODO
+        }
+    }
+
+    private suspend fun getManagerToken(): String? {
+        return databaseReference.child("tokens")
+            .child("manager")
+            .childEvents()
+            .first()
+            .let {
+                it.snapshot.value?.toString()
+            }
+    }
+
+    private suspend fun sendNotificationToToken(token: String, message: String) {
+
     }
 
     private fun createMessage(messageJson: String): FirebaseMessage {

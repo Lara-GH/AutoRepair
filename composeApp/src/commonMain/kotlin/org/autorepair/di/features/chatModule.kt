@@ -1,6 +1,7 @@
 package org.autorepair.di.features
 
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.database.DatabaseReference
 import dev.gitlive.firebase.database.database
 import org.autorepair.data.repository.ChatRepositoryImpl
 import org.autorepair.domain.repository.ChatRepository
@@ -15,9 +16,13 @@ val chatModule = module {
         )
     }
 
+    factory {
+        Firebase.database.reference()
+    }
+
     factory<ChatRepository> {
         ChatRepositoryImpl(
-            databaseReference = Firebase.database.reference(),
+            databaseReference = get(),
             json = get(),
             userCache = get()
         )

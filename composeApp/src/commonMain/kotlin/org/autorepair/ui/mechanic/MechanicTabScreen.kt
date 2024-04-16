@@ -14,10 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import org.autorepair.ui.navigationbar.AutoRepairTab
 
@@ -28,10 +30,21 @@ object MechanicTabScreen: Screen {
     }
 }
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Composable
 fun Screen.TabContent() {
     TabNavigator(
-        AutoRepairTab.HomeTab(),
+        AutoRepairTab.HomeTab,
+        tabDisposable = {
+            TabDisposable(
+                navigator = it,
+                tabs = listOf(
+                    AutoRepairTab.HomeTab,
+                    AutoRepairTab.ChatTab,
+                    AutoRepairTab.SettingsTab(),
+                )
+            )
+        }
     ) {
         Scaffold(
             content = { innerPadding ->
@@ -46,8 +59,8 @@ fun Screen.TabContent() {
                 BottomNavigation(
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
-                    TabNavigationItem(AutoRepairTab.HomeTab())
-                    TabNavigationItem(AutoRepairTab.ChatTab())
+                    TabNavigationItem(AutoRepairTab.HomeTab)
+                    TabNavigationItem(AutoRepairTab.ChatTab)
                     TabNavigationItem(AutoRepairTab.SettingsTab())
                 }
             },

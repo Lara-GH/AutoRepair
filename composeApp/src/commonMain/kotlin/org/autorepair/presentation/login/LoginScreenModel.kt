@@ -48,7 +48,7 @@ class LoginScreenModel(
                 .onSuccess {
                     userRepository.setUserId(it.id)
                     userRepository.setUserRole(it.role)
-
+                    userRepository.syncPushToken()
                     print("user = ${it.id} has role = ${it.role}")
 
                     val user = authRepository.getCurrentUser().getOrNull()

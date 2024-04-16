@@ -56,6 +56,7 @@ kotlin {
                 implementation(libs.ktor.utils)
                 implementation(libs.koin.core)
                 implementation(libs.datastore)
+                api("io.github.mirzemehdi:kmpnotifier:0.5.0")
             }
         }
 

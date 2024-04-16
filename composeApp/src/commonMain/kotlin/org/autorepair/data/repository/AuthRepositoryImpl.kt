@@ -1,15 +1,18 @@
 package org.autorepair.data.repository
 
+import com.mmk.kmpnotifier.notification.NotifierManager
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import org.autorepair.data.exceptions.IncorrectDataException
+import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.User
 import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val userCache: UserCache
 ): AuthRepository {
     //gomellora@gmail.com
     //Qaz12345
@@ -17,13 +20,13 @@ class AuthRepositoryImpl(
         return runCatching {
             val result = auth.signInWithEmailAndPassword(email, password)
             val resultUser = result.user
-            return if(resultUser != null) {
+            return if (resultUser != null) {
                 Result.success(User(resultUser.uid, resultUser.getRole()))
             } else {
                 Result.failure(IncorrectDataException())
             }
         }.onFailure {
-            if(it is FirebaseAuthInvalidUserException) {
+            if (it is FirebaseAuthInvalidUserException) {
                 return Result.failure(IncorrectDataException())
             }
             //отсутствие сети
@@ -53,7 +56,10 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout(): Result<Unit> {
-        return runCatching { auth.signOut() }
+        return runCatching {
+            auth.signOut()
+            userCache.clearAll()
+        }
     }
 
     companion object {

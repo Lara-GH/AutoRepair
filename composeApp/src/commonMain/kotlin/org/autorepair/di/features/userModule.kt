@@ -17,7 +17,8 @@ val userModule = module {
 
     factory <UserRepository>{
         UserRepositoryImpl(
-            userCache = get()
+            userCache = get(),
+            databaseReference = get()
         )
     }
 }

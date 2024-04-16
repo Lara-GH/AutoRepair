@@ -67,6 +67,15 @@ class UserCacheImpl(
             .orEmpty()
     }
 
+    override suspend fun clearAll() {
+        dataStore.edit {
+            it.minusAssign(userIdKey)
+            it.minusAssign(userRoleKey)
+            it.minusAssign(carIdKey)
+            it.minusAssign(userCarsKey)
+        }
+    }
+
     companion object {
         val userIdKey = stringPreferencesKey("userId")
         val userRoleKey = stringPreferencesKey("userRole")

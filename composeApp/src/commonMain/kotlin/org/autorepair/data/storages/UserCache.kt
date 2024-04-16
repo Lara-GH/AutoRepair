@@ -13,4 +13,6 @@ interface UserCache {
     suspend fun getSelectedCarId(): String?
     suspend fun getSelectedCar(): UserCar?
     suspend fun getUserCars(): List<UserCar>
+
+    suspend fun clearAll()
 }
