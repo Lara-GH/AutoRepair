@@ -34,7 +34,7 @@ sealed class AutoRepairTab {
         }
     }
 
-    internal class CarsTab : Tab {
+    object CarsTab : Tab {
         override val options: TabOptions
             @Composable
             get() = createTabOptions("Cars", painterResource(MR.images.car4), 1u)
@@ -56,7 +56,7 @@ sealed class AutoRepairTab {
         }
     }
 
-    internal class SettingsTab : Tab {
+    object SettingsTab : Tab {
         override val options: TabOptions
             @Composable
             get() = createTabOptions("Settings", painterResource(MR.images.settings), 3u)
@@ -67,7 +67,7 @@ sealed class AutoRepairTab {
         }
     }
 
-    internal class BodyShopTab : Tab {
+    object BodyShopTab : Tab {
         override val options: TabOptions
             @Composable
             get() = createTabOptions("BodyShop", painterResource(MR.images.bodyshop), 4u)

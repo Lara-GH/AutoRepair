@@ -21,6 +21,7 @@ class SplashScreenModel(
             runCatching {
                 val user = authRepository.getCurrentUser().getOrNull()
                 val event = if (user != null) {
+                    println("!!!!!!!!!!user!!!!!!!!!!!$user")
                     when (user.role) {
                         UserRole.MANAGER -> SplashEvent.NavigateToUserHome
                         UserRole.MECHANIC -> SplashEvent.NavigateToMechanicHome

@@ -41,7 +41,7 @@ fun Screen.TabContent() {
                 tabs = listOf(
                     AutoRepairTab.HomeTab,
                     AutoRepairTab.ChatTab,
-                    AutoRepairTab.SettingsTab(),
+                    AutoRepairTab.SettingsTab,
                 )
             )
         }
@@ -61,7 +61,7 @@ fun Screen.TabContent() {
                 ) {
                     TabNavigationItem(AutoRepairTab.HomeTab)
                     TabNavigationItem(AutoRepairTab.ChatTab)
-                    TabNavigationItem(AutoRepairTab.SettingsTab())
+                    TabNavigationItem(AutoRepairTab.SettingsTab)
                 }
             },
         )

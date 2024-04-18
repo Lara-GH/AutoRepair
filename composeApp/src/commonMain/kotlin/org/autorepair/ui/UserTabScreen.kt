@@ -41,10 +41,10 @@ fun Screen.TabContent() {
                 navigator = it,
                 tabs = listOf(
                     AutoRepairTab.HomeTab,
-                    AutoRepairTab.CarsTab(),
+                    AutoRepairTab.CarsTab,
                     AutoRepairTab.ChatTab,
-                    AutoRepairTab.SettingsTab(),
-                    AutoRepairTab.BodyShopTab()
+                    AutoRepairTab.SettingsTab,
+                    AutoRepairTab.BodyShopTab
                 )
             )
         }
@@ -63,10 +63,10 @@ fun Screen.TabContent() {
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
                     TabNavigationItem(AutoRepairTab.HomeTab)
-                    TabNavigationItem(AutoRepairTab.CarsTab())
+                    TabNavigationItem(AutoRepairTab.CarsTab)
                     TabNavigationItem(AutoRepairTab.ChatTab)
-                    TabNavigationItem(AutoRepairTab.SettingsTab())
-                    TabNavigationItem(AutoRepairTab.BodyShopTab())
+                    TabNavigationItem(AutoRepairTab.SettingsTab)
+                    TabNavigationItem(AutoRepairTab.BodyShopTab)
                 }
             },
         )

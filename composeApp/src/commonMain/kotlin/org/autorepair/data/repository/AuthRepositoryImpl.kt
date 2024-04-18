@@ -1,6 +1,5 @@
 package org.autorepair.data.repository
 
-import com.mmk.kmpnotifier.notification.NotifierManager
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
