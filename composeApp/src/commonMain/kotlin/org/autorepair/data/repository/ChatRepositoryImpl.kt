@@ -2,6 +2,12 @@ package org.autorepair.data.repository
 
 import dev.gitlive.firebase.database.ChildEvent
 import dev.gitlive.firebase.database.DatabaseReference
+import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -9,9 +15,11 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.take
 import kotlinx.serialization.json.Json
 import org.autorepair.data.exceptions.UnathorizedException
+import org.autorepair.data.models.YearManufacturesNew
 import org.autorepair.data.models.chat.FirebaseMessage
 import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.UserRole
+import org.autorepair.domain.models.YearManufacturers
 import org.autorepair.domain.models.chat.Message
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
@@ -20,8 +28,27 @@ import org.autorepair.ui.datetime.DateTime
 class ChatRepositoryImpl(
     private val databaseReference: DatabaseReference,
     private val json: Json,
-    private val userCache: UserCache
+    private val userCache: UserCache,
+    private val ktorClient: HttpClient
 ) : ChatRepository {
+
+//    suspend fun post(): Result<Unit> {
+//        val carsUrl = "https://fcm.googleapis.com/fcm/send"
+//        val response = ktorClient.post(urlString = carsUrl,  ) {}
+//
+//        val result = if (response.status.isSuccess()) {
+//            val year = json.decodeFromString(
+//                deserializer = YearManufacturesNew.serializer(),
+//                string = response.bodyAsText()
+//            )
+//            Result.success(println("!!!!! Success"))
+//        } else {
+//            // handle error
+//            Result.failure(Exception("error"))
+//        }
+//
+//        return result
+//    }
     override suspend fun sendMessage(
         messageText: String
     ): Result<Unit> {
@@ -60,6 +87,7 @@ class ChatRepositoryImpl(
             println("manager token = $managerToken")
             sendNotificationToToken(managerToken, message)
         } else {
+            println("manager token = ?")
             //TODO
         }
     }

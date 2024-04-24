@@ -24,7 +24,8 @@ val chatModule = module {
         ChatRepositoryImpl(
             databaseReference = get(),
             json = get(),
-            userCache = get()
+            userCache = get(),
+            ktorClient = get()
         )
     }
 }

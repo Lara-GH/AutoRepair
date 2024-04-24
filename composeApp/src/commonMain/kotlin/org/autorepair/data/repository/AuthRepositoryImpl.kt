@@ -8,10 +8,12 @@ import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.User
 import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.repository.AuthRepository
+import org.autorepair.domain.repository.UserRepository
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuth,
-    private val userCache: UserCache
+    private val userCache: UserCache,
+    private val userRepository: UserRepository
 ): AuthRepository {
     //gomellora@gmail.com
     //Qaz12345
@@ -54,8 +56,10 @@ class AuthRepositoryImpl(
         }
     }
 
+
     override suspend fun logout(): Result<Unit> {
         return runCatching {
+            userRepository.deleteMyToken()
             auth.signOut()
             userCache.clearAll()
         }

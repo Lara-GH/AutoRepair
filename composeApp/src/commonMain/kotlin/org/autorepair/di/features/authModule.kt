@@ -12,7 +12,8 @@ val authModule = module {
     factory <AuthRepository>{
         AuthRepositoryImpl(
             auth = Firebase.auth,
-            userCache = get()
+            userCache = get(),
+            userRepository = get()
         )
     }
 

@@ -55,27 +55,40 @@ class UserRepositoryImpl(
         val role = userCache.getUserRole()
         val userId = userCache.getUserId()
         val token = NotifierManager.getPushNotifier().getToken()
-        println("token = $token")
 
-        if(role == UserRole.MANAGER) {
-            return try {
-                databaseReference.child("tokens")
-                    .child("manager")
-                    .setValue(value = token)
-                Result.success(Unit)
-            } catch (t: UnathorizedException) {
-                Result.failure(t)
-            }
-        } else {
-            return try {
-                databaseReference.child("tokens")
-                    .child("user")
-                    .child("$userId")
-                    .setValue(value = token)
-                Result.success(Unit)
-            } catch (t: UnathorizedException) {
-                Result.failure(t)
-            }
+        val childPath = when (role) {
+            UserRole.MANAGER -> "manager"
+            UserRole.MECHANIC -> "mechanic/$userId"
+            else -> "user/$userId"
+        }
+        return try {
+            databaseReference.child("tokens")
+                .child(childPath)
+                .setValue(value = token)
+            Result.success(Unit)
+        } catch (t: UnathorizedException) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun deleteMyToken(): Result<Unit> {
+        val role = userCache.getUserRole()
+        val userId = userCache.getUserId()
+
+        val childPath = when (role) {
+            UserRole.MANAGER -> "manager"
+            UserRole.MECHANIC -> "mechanic/$userId"
+            else -> "user/$userId"
+        }
+
+        return try {
+            NotifierManager.getPushNotifier().deleteMyToken()
+            databaseReference.child("tokens")
+                .child(childPath)
+                .removeValue()
+            Result.success(Unit)
+        } catch (t: UnathorizedException) {
+            Result.failure(t)
         }
     }
 }

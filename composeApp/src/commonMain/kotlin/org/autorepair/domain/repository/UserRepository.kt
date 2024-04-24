@@ -7,6 +7,6 @@ interface UserRepository {
     suspend fun setUserId(id: String): Result<Unit>
     suspend fun getUserRole(): Result<UserRole?>
     suspend fun setUserRole(role: UserRole): Result<Unit>
-
     suspend fun syncPushToken(): Result<Unit>
+    suspend fun deleteMyToken(): Result<Unit>
 }
