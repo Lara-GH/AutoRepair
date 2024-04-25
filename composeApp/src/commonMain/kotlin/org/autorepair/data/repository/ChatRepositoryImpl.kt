@@ -3,23 +3,19 @@ package org.autorepair.data.repository
 import dev.gitlive.firebase.database.ChildEvent
 import dev.gitlive.firebase.database.DatabaseReference
 import io.ktor.client.HttpClient
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
+import io.ktor.util.InternalAPI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.take
 import kotlinx.serialization.json.Json
 import org.autorepair.data.exceptions.UnathorizedException
-import org.autorepair.data.models.YearManufacturesNew
 import org.autorepair.data.models.chat.FirebaseMessage
 import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.UserRole
-import org.autorepair.domain.models.YearManufacturers
 import org.autorepair.domain.models.chat.Message
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
@@ -32,23 +28,6 @@ class ChatRepositoryImpl(
     private val ktorClient: HttpClient
 ) : ChatRepository {
 
-//    suspend fun post(): Result<Unit> {
-//        val carsUrl = "https://fcm.googleapis.com/fcm/send"
-//        val response = ktorClient.post(urlString = carsUrl,  ) {}
-//
-//        val result = if (response.status.isSuccess()) {
-//            val year = json.decodeFromString(
-//                deserializer = YearManufacturesNew.serializer(),
-//                string = response.bodyAsText()
-//            )
-//            Result.success(println("!!!!! Success"))
-//        } else {
-//            // handle error
-//            Result.failure(Exception("error"))
-//        }
-//
-//        return result
-//    }
     override suspend fun sendMessage(
         messageText: String
     ): Result<Unit> {
@@ -82,10 +61,10 @@ class ChatRepositoryImpl(
     }
 
     private suspend fun notifyAnotherSide(userId: String, role: UserRole, message: String) {
-        if(role == UserRole.USER) {
+        if (role == UserRole.USER) {
             val managerToken = getManagerToken() ?: return
             println("manager token = $managerToken")
-            sendNotificationToToken(managerToken, message)
+            sendNotificationToToken(managerToken, message, userId)
         } else {
             println("manager token = ?")
             //TODO
@@ -102,8 +81,40 @@ class ChatRepositoryImpl(
             }
     }
 
-    private suspend fun sendNotificationToToken(token: String, message: String) {
+    @OptIn(InternalAPI::class)
+    private suspend fun sendNotificationToToken(token: String, message: String, userId: String) {
+        val carsUrl = "https://fcm.googleapis.com/fcm/send"
+        val requestBody = """
+            | {"to": "$token",
+            | "notification": {
+            | "body":"$message",
+            | "title":"$userId",
+            | "content_available" : true,
+            | "priority" : "high"
+            | },
+            | "data":{
+            | "body":"$message",
+            | "title":"$userId",
+            | "content_available" : true,
+            | "priority" : "high"
+            | }
+            | }"""
+            .trimMargin()
+        val response = ktorClient.post(urlString = carsUrl) {
+            header(
+                "Authorization",
+                "key=AAAA3dvCFvQ:APA91bGex7HC0FbQJACSXYRb39N_Q_6RIDnstljt8XKoQXtcmB_gvD0QxdxPUohMlIBQAEr5lYQemEC4L4yFfEjfSxOVK9ouhu1Hla0Jfs6UumKgL7bTxJRbSOqRwQNkbkN1JVkMVSXu"
+            )
+            header("Content-Type", "application/json")
+            body = requestBody
+        }
 
+        val result = if (response.status.isSuccess()) {
+            Result.success(println("!!!!! Success"))
+        } else {
+            // handle error
+            Result.failure(Exception("error"))
+        }
     }
 
     private fun createMessage(messageJson: String): FirebaseMessage {

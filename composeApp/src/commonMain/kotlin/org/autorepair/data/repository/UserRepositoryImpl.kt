@@ -57,7 +57,7 @@ class UserRepositoryImpl(
         val token = NotifierManager.getPushNotifier().getToken()
 
         val childPath = when (role) {
-            UserRole.MANAGER -> "manager"
+            UserRole.MANAGER -> "manager/$userId"
             UserRole.MECHANIC -> "mechanic/$userId"
             else -> "user/$userId"
         }
@@ -76,7 +76,7 @@ class UserRepositoryImpl(
         val userId = userCache.getUserId()
 
         val childPath = when (role) {
-            UserRole.MANAGER -> "manager"
+//            UserRole.MANAGER -> "manager"
             UserRole.MECHANIC -> "mechanic/$userId"
             else -> "user/$userId"
         }
