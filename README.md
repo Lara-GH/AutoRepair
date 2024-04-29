@@ -3,6 +3,7 @@ This is a Compose Multiplatform project targeting Android, iOS.
 # AutoRepair
 The application has developed using:
 - Firebase Authentication, Realtime Database, Storage
+- Compose
 - MVVM
 - Koin
 - Voyager navigator
