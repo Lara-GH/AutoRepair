@@ -23,10 +23,9 @@ class SplashScreenModel(
                 val event = if (user != null) {
                     println("!!!!!!!!!!user!!!!!!!!!!!$user")
                     when (user.role) {
-                        UserRole.MANAGER -> SplashEvent.NavigateToUserHome
+                        UserRole.MANAGER -> SplashEvent.NavigateToManagerHome
                         UserRole.MECHANIC -> SplashEvent.NavigateToMechanicHome
                         UserRole.USER -> SplashEvent.NavigateToUserHome
-                        // TODO manager home
                     }
                 } else {
                     SplashEvent.NavigateToLogin

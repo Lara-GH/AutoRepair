@@ -1,4 +1,4 @@
-package org.autorepair.ui
+package org.autorepair.ui.manager
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -16,24 +16,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.tab.CurrentTab
+import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import org.autorepair.ui.navigationbar.AutoRepairTab
 
-object UserTabScreen: Screen {
+object ManagerTabScreen: Screen {
     @Composable
     override fun Content() {
-        UserTabContent()
+        ManagerTabContent()
     }
 }
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Composable
-fun Screen.UserTabContent() {
-    println("UserTabScreen $this!!!!!!!!!!!!!")
+fun Screen.ManagerTabContent() {
+    println("ManagerTabScreen $this!!!!!!!!!!!!!")
     TabNavigator(
         AutoRepairTab.HomeTab,
         tabDisposable = {
@@ -41,10 +41,8 @@ fun Screen.UserTabContent() {
                 navigator = it,
                 tabs = listOf(
                     AutoRepairTab.HomeTab,
-                    AutoRepairTab.CarsTab,
-                    AutoRepairTab.ChatTab,
+                    AutoRepairTab.ChatListTab,
                     AutoRepairTab.SettingsTab,
-                    AutoRepairTab.BodyShopTab
                 )
             )
         }
@@ -55,7 +53,7 @@ fun Screen.UserTabContent() {
                     modifier = Modifier
                         .padding(innerPadding),
                 ) {
-                    CurrentTab()
+                    CurrentScreen()
                 }
             },
             bottomBar = {
@@ -63,10 +61,8 @@ fun Screen.UserTabContent() {
                     backgroundColor = MaterialTheme.colorScheme.background,
                 ) {
                     TabNavigationItem(AutoRepairTab.HomeTab)
-                    TabNavigationItem(AutoRepairTab.CarsTab)
-                    TabNavigationItem(AutoRepairTab.ChatTab)
+                    TabNavigationItem(AutoRepairTab.ChatListTab)
                     TabNavigationItem(AutoRepairTab.SettingsTab)
-                    TabNavigationItem(AutoRepairTab.BodyShopTab)
                 }
             },
         )
@@ -104,9 +100,9 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.onBackground
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }

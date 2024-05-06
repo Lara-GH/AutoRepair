@@ -11,6 +11,7 @@ import org.autorepair.ui.CarsContent
 import org.autorepair.ui.ChatContent
 import org.autorepair.ui.HomeContent
 import org.autorepair.ui.SettingsContent
+import org.autorepair.ui.manager.ChatListContent
 
 @Composable
 private fun createTabOptions(title: String, icon: Painter, index: UShort): TabOptions {
@@ -75,6 +76,17 @@ sealed class AutoRepairTab {
         @Composable
         override fun Content() {
             BodyShopContent()
+        }
+    }
+
+    object ChatListTab : Tab {
+        override val options: TabOptions
+            @Composable
+            get() = createTabOptions("Chat", painterResource(MR.images.chat), 0u)
+
+        @Composable
+        override fun Content() {
+            ChatListContent()
         }
     }
 }

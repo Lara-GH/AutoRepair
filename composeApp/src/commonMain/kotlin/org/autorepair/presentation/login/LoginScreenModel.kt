@@ -54,7 +54,7 @@ class LoginScreenModel(
                     val user = authRepository.getCurrentUser().getOrNull()
                     val event = if (user != null) {
                         when (user.role) {
-                            UserRole.MANAGER -> LoginEvent.NavigateToUserHome
+                            UserRole.MANAGER -> LoginEvent.NavigateToManagerHome
                             UserRole.MECHANIC -> LoginEvent.NavigateToMechanicHome
                             UserRole.USER -> LoginEvent.NavigateToUserHome
                             // TODO manager home

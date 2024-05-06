@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.serialization.json.Json
 import org.autorepair.data.exceptions.UnathorizedException
 import org.autorepair.data.models.chat.FirebaseMessage
 import org.autorepair.data.storages.UserCache
@@ -23,7 +22,6 @@ import org.autorepair.ui.datetime.DateTime
 
 class ChatRepositoryImpl(
     private val databaseReference: DatabaseReference,
-    private val json: Json,
     private val userCache: UserCache,
     private val ktorClient: HttpClient
 ) : ChatRepository {
@@ -46,34 +44,64 @@ class ChatRepositoryImpl(
             isSeen = false
         )
 
-        return try {
-            databaseReference.child("chat")
-                .child(message.userId)
-                .child(message.currentDateTime)
-                .setValue(value = message)
+        return when (userRole) {
+            UserRole.MANAGER -> {
+                val userChatID =
+                    userCache.getUserChatID() ?: return Result.failure(UnathorizedException())
+                try {
+                    databaseReference.child("chat")
+                        .child(userChatID)
+                        .child(message.currentDateTime)
+                        .setValue(value = message)
 
-            notifyAnotherSide(userId, userRole, messageText)
+                    notifyAnotherSide(userChatID, userRole, messageText)
 
-            Result.success(Unit)
-        } catch (t: UnathorizedException) {
-            Result.failure(t)
+                    Result.success(Unit)
+                } catch (t: UnathorizedException) {
+                    Result.failure(t)
+                }
+            }
+//            UserRole.MECHANIC -> {}
+            else -> {
+                try {
+                    databaseReference.child("chat")
+                        .child(message.userId)
+                        .child(message.currentDateTime)
+                        .setValue(value = message)
+
+                    notifyAnotherSide(userId, userRole, messageText)
+
+                    Result.success(Unit)
+                } catch (t: UnathorizedException) {
+                    Result.failure(t)
+                }
+            }
         }
     }
 
     private suspend fun notifyAnotherSide(userId: String, role: UserRole, message: String) {
         if (role == UserRole.USER) {
             val managerToken = getManagerToken() ?: return
-            println("manager token = $managerToken")
             sendNotificationToToken(managerToken, message, userId)
         } else {
-            println("manager token = ?")
-            //TODO
+            val userToken = getUserToken(userId) ?: return
+            sendNotificationToToken(userToken, message, "BodyShop")
         }
     }
 
     private suspend fun getManagerToken(): String? {
         return databaseReference.child("tokens")
             .child("manager")
+            .childEvents()
+            .first()
+            .let {
+                it.snapshot.value?.toString()
+            }
+    }
+
+    private suspend fun getUserToken(userId: String): String? {
+        return databaseReference.child("tokens")
+            .child("user/$userId")
             .childEvents()
             .first()
             .let {
@@ -163,11 +191,20 @@ class ChatRepositoryImpl(
         }
     }
 
-    override suspend fun observeCurrentUserChatEvents(): Flow<ObserveChatEvent> {
-        val userId = userCache.getUserId() ?: return flowOf()
+    override suspend fun observeCurrentUserChatEvents(
+        userRole: UserRole,
+        userChatID: String
+    ): Flow<ObserveChatEvent> {
+        return when (userRole) {
+            UserRole.MANAGER -> observeManagerChatEvents(userChatID)
+            UserRole.MECHANIC -> observeMechanicChatEvents()
+            else -> observeUserChatEvents()
+        }
+    }
+
+    private suspend fun observeManagerChatEvents(userChatID: String): Flow<ObserveChatEvent> {
         return databaseReference.child("chat")
-            .child(userId)
-//            .limitToLast(3)
+            .child(userChatID)
             .childEvents()
 
             .mapNotNull { event ->
@@ -182,6 +219,59 @@ class ChatRepositoryImpl(
                     ChildEvent.Type.REMOVED -> null
                 }
             }
+    }
+
+    private suspend fun observeMechanicChatEvents(): Flow<ObserveChatEvent> {
+        return flowOf()
+    }
+
+    private suspend fun observeUserChatEvents(): Flow<ObserveChatEvent> {
+        val userId = userCache.getUserId() ?: return flowOf()
+        return databaseReference.child("chat")
+            .child(userId)
+            .childEvents()
+
+            .mapNotNull { event ->
+                when (event.type) {
+                    ChildEvent.Type.ADDED -> {
+                        val message = createMessage(event.snapshot.value.toString())
+                        ObserveChatEvent.MessageAdded(message.mapToDomain())
+                    }
+
+                    ChildEvent.Type.CHANGED -> null
+                    ChildEvent.Type.MOVED -> null
+                    ChildEvent.Type.REMOVED -> null
+                }
+            }
+    }
+
+    override suspend fun observeChatsEvents(): Flow<String> {
+        return databaseReference.child("chat")
+            .childEvents()
+            .mapNotNull { event ->
+                when (event.type) {
+                    ChildEvent.Type.ADDED -> event.snapshot.key
+                    else -> null
+                }
+            }
+    }
+
+    override suspend fun getUserChatID(): Result<String?> {
+        return try {
+            val userChatID = userCache.getUserChatID()
+            Result.success(userChatID)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun setUserChatID(userChatID: String): Result<Unit> {
+        return try {
+            userCache.setUserChatID(userChatID)
+            Result.success(Unit)
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
     }
 }
 

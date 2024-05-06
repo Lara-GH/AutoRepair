@@ -54,6 +54,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
 import org.autorepair.presentation.login.LoginEvent
 import org.autorepair.presentation.login.LoginScreenModel
+import org.autorepair.ui.manager.ManagerTabScreen
 import org.autorepair.ui.mechanic.MechanicTabScreen
 import org.autorepair.ui.theme.CustomTypography
 
@@ -113,6 +114,7 @@ fun Screen.LoginContent() {
             when (event) {
                 is LoginEvent.NavigateToUserHome -> navigator.replace(UserTabScreen)
                 is LoginEvent.NavigateToMechanicHome -> navigator.replace(MechanicTabScreen)
+                is LoginEvent.NavigateToManagerHome -> navigator.replace(ManagerTabScreen)
                 is LoginEvent.NavigateToSignUp -> navigator.push(SignUpScreen)
             }
         }

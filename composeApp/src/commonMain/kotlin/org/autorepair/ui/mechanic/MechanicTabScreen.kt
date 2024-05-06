@@ -26,13 +26,13 @@ import org.autorepair.ui.navigationbar.AutoRepairTab
 object MechanicTabScreen: Screen {
     @Composable
     override fun Content() {
-        TabContent()
+        MechanicTabContent()
     }
 }
 
 @OptIn(ExperimentalVoyagerApi::class)
 @Composable
-fun Screen.TabContent() {
+fun Screen.MechanicTabContent() {
     TabNavigator(
         AutoRepairTab.HomeTab,
         tabDisposable = {

@@ -58,8 +58,8 @@ class UserRepositoryImpl(
 
         val childPath = when (role) {
             UserRole.MANAGER -> "manager/$userId"
-            UserRole.MECHANIC -> "mechanic/$userId"
-            else -> "user/$userId"
+            UserRole.MECHANIC -> "mechanic/$userId/$userId"
+            else -> "user/$userId/$userId"
         }
         return try {
             databaseReference.child("tokens")
@@ -76,7 +76,7 @@ class UserRepositoryImpl(
         val userId = userCache.getUserId()
 
         val childPath = when (role) {
-//            UserRole.MANAGER -> "manager"
+            UserRole.MANAGER -> "manager"
             UserRole.MECHANIC -> "mechanic/$userId"
             else -> "user/$userId"
         }

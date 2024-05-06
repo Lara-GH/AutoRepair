@@ -1,17 +1,23 @@
 package org.autorepair.di.features
 
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.database.DatabaseReference
 import dev.gitlive.firebase.database.database
 import org.autorepair.data.repository.ChatRepositoryImpl
 import org.autorepair.domain.repository.ChatRepository
 import org.autorepair.presentation.chat.ChatScreenModel
+import org.autorepair.presentation.chatlist.ChatListScreenModel
 import org.koin.dsl.module
 
 val chatModule = module {
 
     factory {
         ChatScreenModel(
+            chatRepository = get(),
+            userRepository = get()
+        )
+    }
+    factory {
+        ChatListScreenModel(
             chatRepository = get()
         )
     }
@@ -23,7 +29,6 @@ val chatModule = module {
     factory<ChatRepository> {
         ChatRepositoryImpl(
             databaseReference = get(),
-            json = get(),
             userCache = get(),
             ktorClient = get()
         )

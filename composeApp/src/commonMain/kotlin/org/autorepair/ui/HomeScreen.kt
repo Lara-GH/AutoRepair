@@ -78,7 +78,8 @@ fun Screen.HomeContent(){
             when (event) {
                 is HomeEvent.NavigateToBookService -> parentNavigator.push(AddCarScreen)
                 is HomeEvent.NavigateToAddCar -> parentNavigator.push(AddCarScreen)
-                is HomeEvent.NavigateToChat -> tabNavigator.current = AutoRepairTab.ChatTab
+//                is HomeEvent.NavigateToChat -> tabNavigator.current = AutoRepairTab.ChatTab
+                is HomeEvent.NavigateToChat -> tabNavigator.current = AutoRepairTab.SettingsTab
             }
         }
     }

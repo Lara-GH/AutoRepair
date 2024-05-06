@@ -57,7 +57,7 @@ object ChatScreen : Screen {
 fun Screen.ChatContent() {
     val screenModel = getScreenModel<ChatScreenModel>()
     val state by screenModel.state.collectAsState()
-    val parentNavigator = LocalNavigator.currentOrThrow.parent ?: error("No parent navigator")
+    val parentNavigator = LocalNavigator.currentOrThrow.parent ?: LocalNavigator.currentOrThrow ?: error("No parent navigator")
 
     val snackbarHostState = remember { SnackbarHostState() }
 

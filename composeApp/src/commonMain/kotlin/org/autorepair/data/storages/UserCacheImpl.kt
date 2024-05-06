@@ -39,6 +39,12 @@ class UserCacheImpl(
         }
     }
 
+    override suspend fun setUserChatID(userID: String) {
+        dataStore.edit {
+            it[userChatID] = userID
+        }
+    }
+
     override suspend fun getUserId(): String? {
         return dataStore.data.firstOrNull()?.let { it[userIdKey] }
     }
@@ -67,12 +73,17 @@ class UserCacheImpl(
             .orEmpty()
     }
 
+    override suspend fun getUserChatID(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userChatID] }
+    }
+
     override suspend fun clearAll() {
         dataStore.edit {
             it.minusAssign(userIdKey)
             it.minusAssign(userRoleKey)
             it.minusAssign(carIdKey)
             it.minusAssign(userCarsKey)
+            it.minusAssign(userChatID)
         }
     }
 
@@ -81,5 +92,6 @@ class UserCacheImpl(
         val userRoleKey = stringPreferencesKey("userRole")
         val carIdKey = stringPreferencesKey("carId")
         val userCarsKey = stringPreferencesKey("userCars")
+        val userChatID = stringPreferencesKey("userChatID")
     }
 }

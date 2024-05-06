@@ -15,6 +15,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.autorepair.presentation.splash.SplashEvent
 import org.autorepair.presentation.splash.SplashScreenModel
+import org.autorepair.ui.manager.ManagerTabScreen
 import org.autorepair.ui.mechanic.MechanicTabScreen
 
 object SplashScreen : Screen {
@@ -40,6 +41,7 @@ fun Screen.SplashContent() {
                 SplashEvent.NavigateToLogin -> navigator.replace(LoginScreen)
                 SplashEvent.NavigateToUserHome -> navigator.replace(UserTabScreen)
                 SplashEvent.NavigateToMechanicHome -> navigator.replace(MechanicTabScreen)
+                SplashEvent.NavigateToManagerHome -> navigator.replace(ManagerTabScreen)
             }
         }
     }

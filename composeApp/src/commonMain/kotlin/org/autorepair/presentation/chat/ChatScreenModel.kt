@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.autorepair.data.exceptions.UnathorizedException
+import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
+import org.autorepair.domain.repository.UserRepository
 
 class ChatScreenModel(
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    private val userRepository: UserRepository
 ) : StateScreenModel<ChatState>(ChatState.Init) {
 
     private val mutableEvent: MutableSharedFlow<ChatEvent> = MutableSharedFlow()
@@ -49,16 +52,45 @@ class ChatScreenModel(
 
     private fun onNewMessagesSubscribe() {
         screenModelScope.launch {
-            chatRepository.observeCurrentUserChatEvents()
-                .collect {
-                    when (it) {
-                        is ObserveChatEvent.MessageAdded -> {
-                            mutableState.value = mutableState.value.copy(
-                                messages = mutableState.value.messages + it.message
-                            )
+            userRepository.getUserRole().onSuccess { userRole ->
+                userRole?.let { userRole ->
+                    when (userRole) {
+                        UserRole.MANAGER -> {
+                            chatRepository.getUserChatID().onSuccess { userChatID ->
+                                if (userChatID != null) {
+                                    chatRepository.observeCurrentUserChatEvents(
+                                        userRole,
+                                        userChatID
+                                    )
+                                        .collect { event ->
+                                            when (event) {
+                                                is ObserveChatEvent.MessageAdded -> {
+                                                    mutableState.value = mutableState.value.copy(
+                                                        messages = mutableState.value.messages + event.message
+                                                    )
+                                                }
+                                            }
+                                        }
+                                }
+                            }
+                        }
+
+                        UserRole.MECHANIC -> {}
+                        else -> {
+                            chatRepository.observeCurrentUserChatEvents(userRole, "")
+                                .collect { event ->
+                                    when (event) {
+                                        is ObserveChatEvent.MessageAdded -> {
+                                            mutableState.value = mutableState.value.copy(
+                                                messages = mutableState.value.messages + event.message
+                                            )
+                                        }
+                                    }
+                                }
                         }
                     }
                 }
+            }
         }
     }
 
