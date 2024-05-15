@@ -53,7 +53,7 @@ sealed class AutoRepairTab {
 
         @Composable
         override fun Content() {
-            ChatContent()
+            ChatContent("")
         }
     }
 

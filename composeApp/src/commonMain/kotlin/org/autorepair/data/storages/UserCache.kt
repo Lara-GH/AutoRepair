@@ -8,12 +8,10 @@ interface UserCache {
     suspend fun setUserRole(role: UserRole)
     suspend fun setSelectedCarId(id: String)
     suspend fun setUserCars(cars: List<UserCar>)
-    suspend fun setUserChatID(userID: String)
     suspend fun getUserId(): String?
     suspend fun getUserRole(): UserRole?
     suspend fun getSelectedCarId(): String?
     suspend fun getSelectedCar(): UserCar?
     suspend fun getUserCars(): List<UserCar>
-    suspend fun getUserChatID(): String?
     suspend fun clearAll()
 }

@@ -33,7 +33,7 @@ fun Screen.ChatListContent() {
     LaunchedEffect(true) {
         screenModel.events.collect {
             when (it) {
-                is ChatListEvent.NavigateToChat -> parentNavigator.push(ChatScreen)
+                is ChatListEvent.NavigateToChat -> parentNavigator.push(ChatScreen(it.userId))
             }
         }
     }

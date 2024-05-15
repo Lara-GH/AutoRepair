@@ -14,6 +14,7 @@ import org.autorepair.domain.repository.ChatRepository
 import org.autorepair.domain.repository.UserRepository
 
 class ChatScreenModel(
+    private val userId: String,
     private val chatRepository: ChatRepository,
     private val userRepository: UserRepository
 ) : StateScreenModel<ChatState>(ChatState.Init) {
@@ -22,7 +23,7 @@ class ChatScreenModel(
     val events: SharedFlow<ChatEvent> = mutableEvent.asSharedFlow()
 
     init {
-        println("ChatScreenModel created $this!!!!!")
+        println("ChatScreenModel created $this!!!!! userId = $userId")
         onNewMessagesSubscribe()
     }
 
@@ -34,6 +35,7 @@ class ChatScreenModel(
             mutableState.value = mutableState.value.copy(message = "")
 
             chatRepository.sendMessage(
+                userChatID = userId,
                 messageText = messageText
             )
                 .onSuccess {}
@@ -56,24 +58,20 @@ class ChatScreenModel(
                 userRole?.let { userRole ->
                     when (userRole) {
                         UserRole.MANAGER -> {
-                            chatRepository.getUserChatID().onSuccess { userChatID ->
-                                if (userChatID != null) {
-                                    chatRepository.observeCurrentUserChatEvents(
-                                        userRole,
-                                        userChatID
-                                    )
-                                        .collect { event ->
-                                            when (event) {
-                                                is ObserveChatEvent.MessageAdded -> {
-                                                    mutableState.value = mutableState.value.copy(
-                                                        messages = mutableState.value.messages + event.message
-                                                    )
-                                                }
+                                chatRepository.observeCurrentUserChatEvents(
+                                    userRole,
+                                    userId
+                                )
+                                    .collect { event ->
+                                        when (event) {
+                                            is ObserveChatEvent.MessageAdded -> {
+                                                mutableState.value = mutableState.value.copy(
+                                                    messages = mutableState.value.messages + event.message
+                                                )
                                             }
                                         }
-                                }
+                                    }
                             }
-                        }
 
                         UserRole.MECHANIC -> {}
                         else -> {

@@ -15,8 +15,9 @@ class AuthRepositoryImpl(
     private val userCache: UserCache,
     private val userRepository: UserRepository
 ): AuthRepository {
-    //gomellora@gmail.com
-    //Qaz12345
+    //user
+    //qazwsx12345@gmail.com
+    //111111
     override suspend fun auth(email: String, password: String): Result<User> {
         return runCatching {
             val result = auth.signInWithEmailAndPassword(email, password)
@@ -59,7 +60,7 @@ class AuthRepositoryImpl(
 
     override suspend fun logout(): Result<Unit> {
         return runCatching {
-            userRepository.deleteMyToken()
+            userRepository.deleteMyToken().getOrThrow()
             auth.signOut()
             userCache.clearAll()
         }

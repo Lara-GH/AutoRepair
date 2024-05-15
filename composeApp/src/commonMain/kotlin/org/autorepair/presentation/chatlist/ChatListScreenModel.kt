@@ -31,9 +31,7 @@ class ChatListScreenModel(
 
     fun onChatClick(userID: String) {
         screenModelScope.launch {
-            chatRepository.setUserChatID(userID).onSuccess {
-                mutableEvent.emit(ChatListEvent.NavigateToChat)
-            }
+            mutableEvent.emit(ChatListEvent.NavigateToChat(userID))
         }
     }
 }

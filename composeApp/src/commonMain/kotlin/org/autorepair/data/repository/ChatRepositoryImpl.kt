@@ -27,6 +27,7 @@ class ChatRepositoryImpl(
 ) : ChatRepository {
 
     override suspend fun sendMessage(
+        userChatID: String,
         messageText: String
     ): Result<Unit> {
 
@@ -46,8 +47,6 @@ class ChatRepositoryImpl(
 
         return when (userRole) {
             UserRole.MANAGER -> {
-                val userChatID =
-                    userCache.getUserChatID() ?: return Result.failure(UnathorizedException())
                 try {
                     databaseReference.child("chat")
                         .child(userChatID)
@@ -55,8 +54,6 @@ class ChatRepositoryImpl(
                         .setValue(value = message)
 
                     notifyAnotherSide(userChatID, userRole, messageText)
-
-                    Result.success(Unit)
                 } catch (t: UnathorizedException) {
                     Result.failure(t)
                 }
@@ -70,8 +67,6 @@ class ChatRepositoryImpl(
                         .setValue(value = message)
 
                     notifyAnotherSide(userId, userRole, messageText)
-
-                    Result.success(Unit)
                 } catch (t: UnathorizedException) {
                     Result.failure(t)
                 }
@@ -79,12 +74,16 @@ class ChatRepositoryImpl(
         }
     }
 
-    private suspend fun notifyAnotherSide(userId: String, role: UserRole, message: String) {
-        if (role == UserRole.USER) {
-            val managerToken = getManagerToken() ?: return
+    private suspend fun notifyAnotherSide(
+        userId: String,
+        role: UserRole,
+        message: String
+    ): Result<Unit> {
+        return if (role == UserRole.USER) {
+            val managerToken = getManagerToken() ?: return Result.success(Unit)
             sendNotificationToToken(managerToken, message, userId)
         } else {
-            val userToken = getUserToken(userId) ?: return
+            val userToken = getUserToken(userId) ?: return Result.success(Unit)
             sendNotificationToToken(userToken, message, "BodyShop")
         }
     }
@@ -109,58 +108,40 @@ class ChatRepositoryImpl(
             }
     }
 
-    @OptIn(InternalAPI::class)
-    private suspend fun sendNotificationToToken(token: String, message: String, userId: String) {
+    private suspend fun sendNotificationToToken(
+        token: String,
+        message: String,
+        userId: String
+    ): Result<Unit> {
         val carsUrl = "https://fcm.googleapis.com/fcm/send"
-        val requestBody = """
-            | {"to": "$token",
-            | "notification": {
-            | "body":"$message",
-            | "title":"$userId",
-            | "content_available" : true,
-            | "priority" : "high"
-            | },
-            | "data":{
-            | "body":"$message",
-            | "title":"$userId",
-            | "content_available" : true,
-            | "priority" : "high"
-            | }
-            | }"""
-            .trimMargin()
+        val notificationContent = NotificationContent(
+            body = message,
+            title = userId
+        )
+        val requestBody = SendNotificationRequest(
+            to = token,
+            notification = notificationContent,
+            data = notificationContent
+
+        )
+
+        println(Json.encodeToString(serializer = SendNotificationRequest.serializer(), requestBody))
+
         val response = ktorClient.post(urlString = carsUrl) {
             header(
                 "Authorization",
                 "key=AAAA3dvCFvQ:APA91bGex7HC0FbQJACSXYRb39N_Q_6RIDnstljt8XKoQXtcmB_gvD0QxdxPUohMlIBQAEr5lYQemEC4L4yFfEjfSxOVK9ouhu1Hla0Jfs6UumKgL7bTxJRbSOqRwQNkbkN1JVkMVSXu"
             )
-            header("Content-Type", "application/json")
-            body = requestBody
+            contentType(ContentType.Application.Json)
+            setBody(requestBody)
         }
 
-        val result = if (response.status.isSuccess()) {
-            Result.success(println("!!!!! Success"))
+        return if (response.status.isSuccess()) {
+            println("!!!!! Success")
+            Result.success(Unit)
         } else {
-            // handle error
             Result.failure(Exception("error"))
         }
-    }
-
-    private fun createMessage(messageJson: String): FirebaseMessage {
-        print(messageJson)
-        val messageProps = messageJson
-            .trim() // Удаляем начальные и конечные пробелы
-            .removeSurrounding("{", "}") // Удаляем начальную и конечную фигурные скобки
-            .split(",") // Разделяем строку на пары "ключ=значение"
-            .map { it.split("=") } // Разделяем каждую пару на ключ и значение
-            .associate { it.first().trim() to it.getOrNull(1) }
-        return FirebaseMessage(
-            id = messageProps["id"] ?: "",
-            userId = messageProps["userId"]!!,
-            currentDateTime = messageProps["currentDateTime"]!!,
-            userRole = messageProps["userRole"]!!,
-            message = messageProps["message"]!!,
-            isSeen = false
-        )
     }
 
     private suspend fun FirebaseMessage.mapToDomain(): Message {
@@ -205,12 +186,13 @@ class ChatRepositoryImpl(
     private suspend fun observeManagerChatEvents(userChatID: String): Flow<ObserveChatEvent> {
         return databaseReference.child("chat")
             .child(userChatID)
+//            .startAt()
             .childEvents()
-
             .mapNotNull { event ->
                 when (event.type) {
                     ChildEvent.Type.ADDED -> {
-                        val message = createMessage(event.snapshot.value.toString())
+                        println("added = ${event.snapshot.value}")
+                        val message = event.snapshot.value<FirebaseMessage>()
                         ObserveChatEvent.MessageAdded(message.mapToDomain())
                     }
 
@@ -234,7 +216,7 @@ class ChatRepositoryImpl(
             .mapNotNull { event ->
                 when (event.type) {
                     ChildEvent.Type.ADDED -> {
-                        val message = createMessage(event.snapshot.value.toString())
+                        val message = event.snapshot.value<FirebaseMessage>()
                         ObserveChatEvent.MessageAdded(message.mapToDomain())
                     }
 
@@ -254,24 +236,6 @@ class ChatRepositoryImpl(
                     else -> null
                 }
             }
-    }
-
-    override suspend fun getUserChatID(): Result<String?> {
-        return try {
-            val userChatID = userCache.getUserChatID()
-            Result.success(userChatID)
-        } catch (t: Throwable) {
-            Result.failure(t)
-        }
-    }
-
-    override suspend fun setUserChatID(userChatID: String): Result<Unit> {
-        return try {
-            userCache.setUserChatID(userChatID)
-            Result.success(Unit)
-        } catch (t: Throwable) {
-            Result.failure(t)
-        }
     }
 }
 

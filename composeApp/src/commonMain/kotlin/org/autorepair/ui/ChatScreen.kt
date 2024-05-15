@@ -45,19 +45,20 @@ import org.autorepair.MR
 import org.autorepair.presentation.chat.ChatEvent
 import org.autorepair.presentation.chat.ChatScreenModel
 import org.autorepair.ui.chat.Messages
+import org.koin.core.parameter.parametersOf
 
-object ChatScreen : Screen {
+data class ChatScreen(private val userId: String) : Screen {
     @Composable
     override fun Content() {
-        ChatContent()
+        ChatContent(userId)
     }
 }
 
 @Composable
-fun Screen.ChatContent() {
-    val screenModel = getScreenModel<ChatScreenModel>()
+fun Screen.ChatContent(userId: String) {
+    val screenModel = getScreenModel<ChatScreenModel> { parametersOf(userId) }
     val state by screenModel.state.collectAsState()
-    val parentNavigator = LocalNavigator.currentOrThrow.parent ?: LocalNavigator.currentOrThrow ?: error("No parent navigator")
+    val parentNavigator = LocalNavigator.currentOrThrow.parent ?: LocalNavigator.currentOrThrow
 
     val snackbarHostState = remember { SnackbarHostState() }
 

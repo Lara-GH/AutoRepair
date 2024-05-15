@@ -39,12 +39,6 @@ class UserCacheImpl(
         }
     }
 
-    override suspend fun setUserChatID(userID: String) {
-        dataStore.edit {
-            it[userChatID] = userID
-        }
-    }
-
     override suspend fun getUserId(): String? {
         return dataStore.data.firstOrNull()?.let { it[userIdKey] }
     }
@@ -71,10 +65,6 @@ class UserCacheImpl(
             ?.let { it[userCarsKey] }
             ?.let { json.decodeFromString<List<UserCar>>(it) }
             .orEmpty()
-    }
-
-    override suspend fun getUserChatID(): String? {
-        return dataStore.data.firstOrNull()?.let { it[userChatID] }
     }
 
     override suspend fun clearAll() {
