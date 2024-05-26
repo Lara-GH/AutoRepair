@@ -18,8 +18,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -45,6 +42,7 @@ import org.autorepair.MR
 import org.autorepair.presentation.chat.ChatEvent
 import org.autorepair.presentation.chat.ChatScreenModel
 import org.autorepair.ui.chat.Messages
+import org.autorepair.ui.features.SnackbarComponent
 import org.koin.core.parameter.parametersOf
 
 data class ChatScreen(private val userId: String) : Screen {
@@ -109,23 +107,7 @@ fun Screen.ChatContent(userId: String) {
             onClick = { screenModel.onSendMessageClick() },
         )
 
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-        ) {
-            Snackbar {
-                Text(
-                    modifier = Modifier.fillMaxWidth()
-                        .align(Alignment.Center),
-                    text = it.visuals.message,
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+        SnackbarComponent(snackbarHostState)
     }
 }
 

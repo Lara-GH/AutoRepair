@@ -2,8 +2,11 @@ package org.autorepair.data.repository
 
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import dev.gitlive.firebase.auth.FirebaseUser
+import org.autorepair.data.exceptions.Error
 import org.autorepair.data.exceptions.IncorrectDataException
+import org.autorepair.data.exceptions.UserExistsException
 import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.User
 import org.autorepair.domain.models.UserRole
@@ -14,10 +17,26 @@ class AuthRepositoryImpl(
     private val auth: FirebaseAuth,
     private val userCache: UserCache,
     private val userRepository: UserRepository
-): AuthRepository {
+) : AuthRepository {
     //user
     //qazwsx12345@gmail.com
     //111111
+    override suspend fun createUser(email: String, password: String): Result<User> {
+        return runCatching {
+            val result = auth.createUserWithEmailAndPassword(email, password)
+            val resultUser = result.user
+            return if (resultUser != null) {
+                Result.success(User(resultUser.uid, resultUser.getRole()))
+            } else {
+                Result.failure(IncorrectDataException())
+            }
+        }.onFailure {
+            return if (it is FirebaseAuthUserCollisionException) {
+                Result.failure(UserExistsException())
+            } else Result.failure(Error())
+        }
+    }
+
     override suspend fun auth(email: String, password: String): Result<User> {
         return runCatching {
             val result = auth.signInWithEmailAndPassword(email, password)
@@ -28,9 +47,9 @@ class AuthRepositoryImpl(
                 Result.failure(IncorrectDataException())
             }
         }.onFailure {
-            if (it is FirebaseAuthInvalidUserException) {
-                return Result.failure(IncorrectDataException())
-            }
+            return if (it is FirebaseAuthInvalidUserException) {
+                Result.failure(IncorrectDataException())
+            } else Result.failure(Error())
             //отсутствие сети
             //другая ошибка
         }
@@ -38,7 +57,7 @@ class AuthRepositoryImpl(
 
     private fun getUserRoleFromClaims(claims: Map<String, Any>): UserRole {
         val roleValue = claims[ROLE_CLAIM]?.toString().orEmpty()
-        return when(roleValue) {
+        return when (roleValue) {
             ROLE_VALUE_MANAGER -> UserRole.MANAGER
             ROLE_VALUE_MECHANIC -> UserRole.MECHANIC
             else -> UserRole.USER

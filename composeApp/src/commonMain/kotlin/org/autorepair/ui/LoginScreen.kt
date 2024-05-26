@@ -89,10 +89,10 @@ fun Screen.LoginContent() {
                 enabled = state.formEnabled,
                 isLoading = state.isLoading,
                 email = state.email,
-                password = state.pass,
+                password = state.password,
                 isIncorrectData = state.isIncorrectData,
                 onEmailChange = screenModel::onEmailChanged,
-                onPasswordChange = { screenModel.onPassChanged(it) },
+                onPasswordChange = screenModel::onPasswordChanged,
                 onLoginClick = screenModel::onLoginClick
             )
             LoginFooter(
@@ -139,7 +139,6 @@ fun LoginForm(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit
 ) {
-
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -196,7 +195,7 @@ fun LoginForm(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        LoginButton(onLoginClick, isLoading)
+        LoginSignUpButton(onLoginClick, isLoading, stringResource(MR.strings.login2))
     }
 }
 
@@ -268,7 +267,7 @@ fun LoginFooter(onSignUpClick: () -> Unit) {
 }
 
 @Composable
-fun LoginButton(onLoginClick: () -> Unit, isLoading: Boolean) {
+fun LoginSignUpButton(onLoginClick: () -> Unit, isLoading: Boolean, buttonText: String) {
     Box {
         Button(
             modifier = Modifier,
@@ -283,7 +282,7 @@ fun LoginButton(onLoginClick: () -> Unit, isLoading: Boolean) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = stringResource(MR.strings.login2),
+                    text = buttonText,
                     color = MaterialTheme.colorScheme.background,
                     style = TextStyle(
                         fontFamily = fontFamilyResource(MR.fonts.Montserrat.semiBold),

@@ -3,19 +3,23 @@ package org.autorepair.presentation.signup
 data class SignUpState(
     val formEnabled: Boolean,
     val email: String,
-    val pass: String,
+    val password: String,
+    val confirmPassword: String,
     val isLoading: Boolean,
     val error: Throwable?,
-    val isIncorrectData: Boolean
+    val isIncorrectData: Boolean,
+    val isUserExists: Boolean
 ) {
     companion object {
         val Init = SignUpState(
             formEnabled = true,
             email = "",
-            pass = "",
+            password = "",
+            confirmPassword = "",
             isLoading = false,
             error = null,
-            isIncorrectData = false
+            isIncorrectData = false,
+            isUserExists = false
         )
     }
 }

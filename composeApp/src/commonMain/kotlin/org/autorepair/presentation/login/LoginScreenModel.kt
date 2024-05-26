@@ -19,20 +19,12 @@ class LoginScreenModel(
     private val mutableEvent: MutableSharedFlow<LoginEvent> = MutableSharedFlow()
     val events: SharedFlow<LoginEvent> = mutableEvent.asSharedFlow()
 
-    init {
-        screenModelScope.launch{
-            println("LoginScreenModel created $this!!!!!")
-            println("WELCOME UserID ${userRepository.getUserId()}!!!!!")
-            println("UserRole ${userRepository.getUserRole()}!!!!!")
-        }
-    }
-
     fun onEmailChanged(email: String) {
         mutableState.value = mutableState.value.copy(email = email)
     }
 
-    fun onPassChanged(pass: String) {
-        mutableState.value = mutableState.value.copy(pass = pass)
+    fun onPasswordChanged(password: String) {
+        mutableState.value = mutableState.value.copy(password = password)
     }
 
     fun onLoginClick() {
@@ -44,7 +36,7 @@ class LoginScreenModel(
                 error = null
             )
             val state = mutableState.value
-            authRepository.auth(email = state.email, password = state.pass)
+            authRepository.auth(email = state.email, password = state.password)
                 .onSuccess {
                     userRepository.setUserId(it.id)
                     userRepository.setUserRole(it.role)
@@ -57,7 +49,6 @@ class LoginScreenModel(
                             UserRole.MANAGER -> LoginEvent.NavigateToManagerHome
                             UserRole.MECHANIC -> LoginEvent.NavigateToMechanicHome
                             UserRole.USER -> LoginEvent.NavigateToUserHome
-                            // TODO manager home
                         }
                     } else {
                         LoginEvent.NavigateToUserHome
@@ -78,11 +69,5 @@ class LoginScreenModel(
         screenModelScope.launch {
             mutableEvent.emit(LoginEvent.NavigateToSignUp)
         }
-    }
-
-    override fun onDispose(){
-        println()
-        println("onDispose LoginScreenModel!!!!!")
-        super.onDispose()
     }
 }

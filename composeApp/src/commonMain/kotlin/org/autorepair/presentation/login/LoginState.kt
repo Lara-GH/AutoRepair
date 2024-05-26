@@ -3,21 +3,19 @@ package org.autorepair.presentation.login
 data class LoginState(
     val formEnabled: Boolean,
     val email: String,
-    val pass: String,
+    val password: String,
     val isLoading: Boolean,
     val error: Throwable?,
-    val isIncorrectData: Boolean,
-    val navigateToMain: Boolean
+    val isIncorrectData: Boolean
 ) {
     companion object {
         val Init = LoginState(
             formEnabled = true,
             email = "",
-            pass = "",
+            password = "",
             isLoading = false,
             error = null,
-            isIncorrectData = false,
-            navigateToMain = false
+            isIncorrectData = false
         )
     }
 }
