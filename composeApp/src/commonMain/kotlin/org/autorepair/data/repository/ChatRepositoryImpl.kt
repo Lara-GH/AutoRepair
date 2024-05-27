@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.json.Json
-import org.autorepair.data.exceptions.UnathorizedException
+import org.autorepair.data.exceptions.UnauthorizedException
 import org.autorepair.data.models.chat.FirebaseMessage
 import org.autorepair.data.models.chat.NotificationContent
 import org.autorepair.data.models.chat.SendNotificationRequest
@@ -36,8 +36,8 @@ class ChatRepositoryImpl(
         messageText: String
     ): Result<Unit> {
 
-        val userId = userCache.getUserId() ?: return Result.failure(UnathorizedException())
-        val userRole = userCache.getUserRole() ?: return Result.failure(UnathorizedException())
+        val userId = userCache.getUserId() ?: return Result.failure(UnauthorizedException())
+        val userRole = userCache.getUserRole() ?: return Result.failure(UnauthorizedException())
 
         val currentDateTime = DateTime.getCurrentDateTime()
 
@@ -59,7 +59,7 @@ class ChatRepositoryImpl(
                         .setValue(value = message)
 
                     notifyAnotherSide(userChatID, userRole, messageText)
-                } catch (t: UnathorizedException) {
+                } catch (t: UnauthorizedException) {
                     Result.failure(t)
                 }
             }
@@ -72,7 +72,7 @@ class ChatRepositoryImpl(
                         .setValue(value = message)
 
                     notifyAnotherSide(userId, userRole, messageText)
-                } catch (t: UnathorizedException) {
+                } catch (t: UnauthorizedException) {
                     Result.failure(t)
                 }
             }

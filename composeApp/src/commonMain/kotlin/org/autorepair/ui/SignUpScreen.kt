@@ -47,7 +47,6 @@ import org.autorepair.ui.features.SnackbarComponent
 import org.autorepair.ui.manager.ManagerTabScreen
 import org.autorepair.ui.mechanic.MechanicTabScreen
 import org.autorepair.ui.theme.CustomTypography
-import kotlin.reflect.KFunction1
 
 object SignUpScreen : Screen {
     @Composable
@@ -62,7 +61,7 @@ fun Screen.SignUpContent() {
     val state by screenModel.state.collectAsState()
 
     val navigator = LocalNavigator.currentOrThrow
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Box(Modifier.fillMaxSize()) {
 
@@ -84,7 +83,6 @@ fun Screen.SignUpContent() {
                     email = state.email,
                     password = state.password,
                     confirmPassword = state.confirmPassword,
-                    isIncorrectData = state.isIncorrectData,
                     onEmailChange = screenModel::onEmailChanged,
                     onPasswordChange = screenModel::onPasswordChanged,
                     onConfirmPasswordChange = screenModel::onConfirmPasswordChanged,
@@ -93,18 +91,6 @@ fun Screen.SignUpContent() {
                 SignUpFooter(
                     onSignInClick = screenModel::onSignInClick
                 )
-
-                if (state.isIncorrectData) {
-                    Text("incorrect data")
-                }
-
-                if (state.isUserExists) {
-                    Text("User already exists")
-                }
-
-                if (state.error != null) {
-                    Text("error = ${state.error}")
-                }
             }
         }
 
@@ -115,13 +101,13 @@ fun Screen.SignUpContent() {
                     is SignUpEvent.NavigateToMechanicHome -> navigator.replace(MechanicTabScreen)
                     is SignUpEvent.NavigateToManagerHome -> navigator.replace(ManagerTabScreen)
                     is SignUpEvent.NavigateToLogin -> navigator.pop()
-                    is SignUpEvent.ShowSnackbar -> {
-                        snackbarHostState.showSnackbar(event.text)
+                    is SignUpEvent.ShowSnackBar -> {
+                        snackBarHostState.showSnackbar(event.text)
                     }
                 }
             }
         }
-        SnackbarComponent(snackbarHostState)
+        SnackbarComponent(snackBarHostState)
     }
 }
 
@@ -132,11 +118,10 @@ fun SignUpForm(
     email: String,
     password: String,
     confirmPassword: String,
-    isIncorrectData: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
-    onSignUpClick: KFunction1<String, Unit>
+    onSignUpClick: (String) -> Unit
 ) {
 
     Column(
@@ -218,9 +203,12 @@ fun SignUpForm(
         )
 
         Spacer(modifier = Modifier.height(40.dp))
-        val userExists = stringResource(MR.strings.user_already_exists)
-        LoginSignUpButton({ onSignUpClick(userExists) }, isLoading, stringResource(MR.strings.sign_up2))
-
+        val passwordMismatch = stringResource(MR.strings.passwords_do_not_match)
+        LoginSignUpButton(
+            { onSignUpClick(passwordMismatch) },
+            isLoading,
+            stringResource(MR.strings.sign_up2)
+        )
     }
 }
 

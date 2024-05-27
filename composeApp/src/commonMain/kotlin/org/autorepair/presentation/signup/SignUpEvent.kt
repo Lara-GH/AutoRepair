@@ -5,5 +5,5 @@ sealed interface SignUpEvent {
     data object NavigateToMechanicHome : SignUpEvent
     data object NavigateToManagerHome : SignUpEvent
     data object NavigateToLogin : SignUpEvent
-    data class ShowSnackbar(val text: String): SignUpEvent
+    data class ShowSnackBar(val text: String): SignUpEvent
 }

@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.data.exceptions.IncorrectDataException
 import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.repository.AuthRepository
 import org.autorepair.domain.repository.UserRepository
@@ -32,7 +31,6 @@ class LoginScreenModel(
 
             mutableState.value = mutableState.value.copy(
                 isLoading = true,
-                isIncorrectData = false,
                 error = null
             )
             val state = mutableState.value
@@ -56,10 +54,8 @@ class LoginScreenModel(
                     mutableEvent.emit(event)
                 }
                 .onFailure {
-                    mutableState.value = mutableState.value.copy(
-                        error = it,
-                        isIncorrectData = it is IncorrectDataException
-                    )
+                    it.message?.let { it1 -> LoginEvent.ShowSnackBar(it1) }
+                        ?.let { it2 -> mutableEvent.emit(it2) }
                 }
             mutableState.value = mutableState.value.copy(isLoading = false)
         }

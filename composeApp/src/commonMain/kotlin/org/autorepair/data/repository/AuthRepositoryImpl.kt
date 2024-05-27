@@ -1,12 +1,8 @@
 package org.autorepair.data.repository
 
 import dev.gitlive.firebase.auth.FirebaseAuth
-import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
-import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import dev.gitlive.firebase.auth.FirebaseUser
-import org.autorepair.data.exceptions.Error
 import org.autorepair.data.exceptions.IncorrectDataException
-import org.autorepair.data.exceptions.UserExistsException
 import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.User
 import org.autorepair.domain.models.UserRole
@@ -31,9 +27,7 @@ class AuthRepositoryImpl(
                 Result.failure(IncorrectDataException())
             }
         }.onFailure {
-            return if (it is FirebaseAuthUserCollisionException) {
-                Result.failure(UserExistsException())
-            } else Result.failure(Error())
+            return Result.failure(it)
         }
     }
 
@@ -47,11 +41,7 @@ class AuthRepositoryImpl(
                 Result.failure(IncorrectDataException())
             }
         }.onFailure {
-            return if (it is FirebaseAuthInvalidUserException) {
-                Result.failure(IncorrectDataException())
-            } else Result.failure(Error())
-            //отсутствие сети
-            //другая ошибка
+            return Result.failure(it)
         }
     }
 

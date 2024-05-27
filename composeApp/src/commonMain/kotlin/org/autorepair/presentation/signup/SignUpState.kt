@@ -7,8 +7,7 @@ data class SignUpState(
     val confirmPassword: String,
     val isLoading: Boolean,
     val error: Throwable?,
-    val isIncorrectData: Boolean,
-    val isUserExists: Boolean
+    val isPasswordMismatch: Boolean
 ) {
     companion object {
         val Init = SignUpState(
@@ -18,8 +17,7 @@ data class SignUpState(
             confirmPassword = "",
             isLoading = false,
             error = null,
-            isIncorrectData = false,
-            isUserExists = false
+            isPasswordMismatch = false
         )
     }
 }

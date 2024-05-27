@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.data.exceptions.UnathorizedException
+import org.autorepair.data.exceptions.UnauthorizedException
 import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.models.chat.ObserveChatEvent
 import org.autorepair.domain.repository.ChatRepository
@@ -41,8 +41,8 @@ class ChatScreenModel(
                 .onSuccess {}
                 .onFailure {
                     println("!!!!!!!!!NO Message sent, $it")
-                    if (it is UnathorizedException) {
-                        mutableEvent.emit(ChatEvent.ShowSnackbar("unauth"))
+                    if (it is UnauthorizedException) {
+                        mutableEvent.emit(ChatEvent.ShowSnackBar("unauth"))
                         delay(2000)
                         mutableEvent.emit(ChatEvent.NavigateToLogin)
                     }

@@ -2,7 +2,7 @@ package org.autorepair.data.repository
 
 import com.mmk.kmpnotifier.notification.NotifierManager
 import dev.gitlive.firebase.database.DatabaseReference
-import org.autorepair.data.exceptions.UnathorizedException
+import org.autorepair.data.exceptions.UnauthorizedException
 import org.autorepair.data.storages.UserCache
 import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.repository.UserRepository
@@ -66,7 +66,7 @@ class UserRepositoryImpl(
                 .child(childPath)
                 .setValue(value = token)
             Result.success(Unit)
-        } catch (t: UnathorizedException) {
+        } catch (t: UnauthorizedException) {
             Result.failure(t)
         }
     }
@@ -87,7 +87,7 @@ class UserRepositoryImpl(
                 .child(childPath)
                 .removeValue()
             Result.success(Unit)
-        } catch (t: UnathorizedException) {
+        } catch (t: UnauthorizedException) {
             Result.failure(t)
         }
     }

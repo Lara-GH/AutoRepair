@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.autorepair.data.exceptions.UserExistsException
 import org.autorepair.domain.models.UserRole
 import org.autorepair.domain.repository.AuthRepository
 import org.autorepair.domain.repository.UserRepository
@@ -31,39 +30,44 @@ class SignUpScreenModel(
         mutableState.value = mutableState.value.copy(confirmPassword = confirmPassword)
     }
 
-    fun onSignUpClick(userExists: String) {
+    fun onSignUpClick(passwordMismatch: String) {
         screenModelScope.launch {
-            mutableState.value = mutableState.value.copy(
-                isLoading = true,
-                isIncorrectData = false,
-                error = null
-            )
             val state = mutableState.value
-            authRepository.createUser(email = state.email, password = state.password)
-                .onSuccess {
-                    userRepository.setUserId(it.id)
-                    userRepository.setUserRole(it.role)
-                    userRepository.syncPushToken()
-                    print("user = ${it.id} has role = ${it.role}")
+            if (state.password == state.confirmPassword) {
+                mutableState.value = mutableState.value.copy(
+                    isLoading = true,
+                    isPasswordMismatch = false,
+                    error = null
+                )
 
-                    val user = authRepository.getCurrentUser().getOrNull()
-                    val event = if (user != null) {
-                        when (user.role) {
-                            UserRole.MANAGER -> SignUpEvent.NavigateToManagerHome
-                            UserRole.MECHANIC -> SignUpEvent.NavigateToMechanicHome
-                            UserRole.USER -> SignUpEvent.NavigateToUserHome
+                authRepository.createUser(email = state.email, password = state.password)
+                    .onSuccess {
+                        userRepository.setUserId(it.id)
+                        userRepository.setUserRole(it.role)
+                        userRepository.syncPushToken()
+                        print("user = ${it.id} has role = ${it.role}")
+
+                        val user = authRepository.getCurrentUser().getOrNull()
+                        val event = if (user != null) {
+                            when (user.role) {
+                                UserRole.MANAGER -> SignUpEvent.NavigateToManagerHome
+                                UserRole.MECHANIC -> SignUpEvent.NavigateToMechanicHome
+                                UserRole.USER -> SignUpEvent.NavigateToUserHome
+                            }
+                        } else {
+                            SignUpEvent.NavigateToUserHome
                         }
-                    } else {
-                        SignUpEvent.NavigateToUserHome
+                        mutableEvent.emit(event)
                     }
-                    mutableEvent.emit(event)
-                }
-                .onFailure {
-                    if (it is UserExistsException){
-                        mutableEvent.emit(SignUpEvent.ShowSnackbar(userExists))
+                    .onFailure {
+                        it.message?.let { it1 -> SignUpEvent.ShowSnackBar(it1) }
+                            ?.let { it2 -> mutableEvent.emit(it2) }
                     }
-                }
-            mutableState.value = mutableState.value.copy(isLoading = false)
+                mutableState.value = mutableState.value.copy(isLoading = false)
+            } else {
+                mutableState.value = mutableState.value.copy(isPasswordMismatch = true)
+                mutableEvent.emit(SignUpEvent.ShowSnackBar(passwordMismatch))
+            }
         }
     }
 

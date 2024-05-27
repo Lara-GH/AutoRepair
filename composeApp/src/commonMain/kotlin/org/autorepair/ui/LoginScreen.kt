@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,6 +55,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import org.autorepair.MR
 import org.autorepair.presentation.login.LoginEvent
 import org.autorepair.presentation.login.LoginScreenModel
+import org.autorepair.ui.features.SnackbarComponent
 import org.autorepair.ui.manager.ManagerTabScreen
 import org.autorepair.ui.mechanic.MechanicTabScreen
 import org.autorepair.ui.theme.CustomTypography
@@ -72,6 +74,7 @@ fun Screen.LoginContent() {
     val state by screenModel.state.collectAsState()
 
     val navigator = LocalNavigator.currentOrThrow
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -90,7 +93,6 @@ fun Screen.LoginContent() {
                 isLoading = state.isLoading,
                 email = state.email,
                 password = state.password,
-                isIncorrectData = state.isIncorrectData,
                 onEmailChange = screenModel::onEmailChanged,
                 onPasswordChange = screenModel::onPasswordChanged,
                 onLoginClick = screenModel::onLoginClick
@@ -98,10 +100,6 @@ fun Screen.LoginContent() {
             LoginFooter(
                 onSignUpClick = screenModel::onSingUpClick
             )
-
-            if (state.isIncorrectData) {
-                Text("incorrectData")
-            }
 
             if (state.error != null) {
                 Text("error = ${state.error}")
@@ -116,9 +114,13 @@ fun Screen.LoginContent() {
                 is LoginEvent.NavigateToMechanicHome -> navigator.replace(MechanicTabScreen)
                 is LoginEvent.NavigateToManagerHome -> navigator.replace(ManagerTabScreen)
                 is LoginEvent.NavigateToSignUp -> navigator.push(SignUpScreen)
+                is LoginEvent.ShowSnackBar -> {
+                    snackBarHostState.showSnackbar(event.text)
+                }
             }
         }
     }
+    SnackbarComponent(snackBarHostState)
 }
 
 enum class FocusedField {
@@ -134,7 +136,6 @@ fun LoginForm(
     isLoading: Boolean,
     email: String,
     password: String,
-    isIncorrectData: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit

@@ -68,7 +68,7 @@ fun Screen.ChatContent(userId: String) {
                     parentNavigator.replace(LoginScreen)
                 }
 
-                is ChatEvent.ShowSnackbar -> {
+                is ChatEvent.ShowSnackBar -> {
                     snackbarHostState.showSnackbar(it.text)
                 }
             }
