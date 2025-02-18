@@ -41,27 +41,31 @@ class SignUpScreenModel(
                 )
 
                 authRepository.createUser(email = state.email, password = state.password)
-                    .onSuccess {
-                        userRepository.setUserId(it.id)
-                        userRepository.setUserRole(it.role)
+                    .onSuccess { user ->
+                        userRepository.setUserId(user.id)
+                        userRepository.setUserRole(user.role)
+                        userRepository.setUserEmail(user.email)
                         userRepository.syncPushToken()
-                        print("user = ${it.id} has role = ${it.role}")
-
-                        val user = authRepository.getCurrentUser().getOrNull()
-                        val event = if (user != null) {
-                            when (user.role) {
-                                UserRole.MANAGER -> SignUpEvent.NavigateToManagerHome
-                                UserRole.MECHANIC -> SignUpEvent.NavigateToMechanicHome
-                                UserRole.USER -> SignUpEvent.NavigateToUserHome
+                        userRepository.addUserToRealtimeDatabase(user.id, user.role, user.email)
+                            .onSuccess {
+                                print("user = ${user.id} has role = ${user.role}")
+                                val currentUser = authRepository.getCurrentUser().getOrNull()
+                                val event = when (currentUser?.role) {
+                                    UserRole.MANAGER -> SignUpEvent.NavigateToManagerHome
+                                    UserRole.MECHANIC -> SignUpEvent.NavigateToMechanicHome
+                                    UserRole.USER -> SignUpEvent.NavigateToUserHome
+                                    else -> SignUpEvent.NavigateToUserHome
+                                }
+                                mutableEvent.emit(event)
+                            }.onFailure { error ->
+                            error.message?.let { message ->
+                                mutableEvent.emit(SignUpEvent.ShowSnackBar(message))
                             }
-                        } else {
-                            SignUpEvent.NavigateToUserHome
                         }
-                        mutableEvent.emit(event)
-                    }
-                    .onFailure {
-                        it.message?.let { it1 -> SignUpEvent.ShowSnackBar(it1) }
-                            ?.let { it2 -> mutableEvent.emit(it2) }
+                    }.onFailure { error ->
+                        error.message?.let { message ->
+                            mutableEvent.emit(SignUpEvent.ShowSnackBar(message))
+                        }
                     }
                 mutableState.value = mutableState.value.copy(isLoading = false)
             } else {

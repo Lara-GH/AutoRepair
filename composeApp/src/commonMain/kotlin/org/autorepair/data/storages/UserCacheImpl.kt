@@ -26,6 +26,36 @@ class UserCacheImpl(
         }
     }
 
+    override suspend fun setUserFirstName(firstName: String) {
+        dataStore.edit {
+            it[userFirstNameKey] = firstName
+        }
+    }
+
+    override suspend fun setUserLastName(lastName: String) {
+        dataStore.edit {
+            it[userLastNameKey] = lastName
+        }
+    }
+
+    override suspend fun setUserAddress(address: String) {
+        dataStore.edit {
+            it[userAddressKey] = address
+        }
+    }
+
+    override suspend fun setUserEmail(email: String) {
+        dataStore.edit {
+            it[userEmailKey] = email
+        }
+    }
+
+    override suspend fun setUserPhone(phone: String) {
+        dataStore.edit {
+            it[userPhoneKey] = phone
+        }
+    }
+
     override suspend fun setSelectedCarId(id: String) {
         dataStore.edit {
             it[carIdKey] = id
@@ -50,6 +80,26 @@ class UserCacheImpl(
             }
     }
 
+    override suspend fun getUserFirstName(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userFirstNameKey] }
+    }
+
+    override suspend fun getUserLastName(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userLastNameKey] }
+    }
+
+    override suspend fun getUserAddress(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userAddressKey] }
+    }
+
+    override suspend fun getUserEmail(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userEmailKey] }
+    }
+
+    override suspend fun getUserPhone(): String? {
+        return dataStore.data.firstOrNull()?.let { it[userPhoneKey] }
+    }
+
     override suspend fun getSelectedCarId(): String? {
         return dataStore.data.firstOrNull()?.let { it[carIdKey] }
     }
@@ -71,6 +121,11 @@ class UserCacheImpl(
         dataStore.edit {
             it.minusAssign(userIdKey)
             it.minusAssign(userRoleKey)
+            it.minusAssign(userFirstNameKey)
+            it.minusAssign(userLastNameKey)
+            it.minusAssign(userAddressKey)
+            it.minusAssign(userEmailKey)
+            it.minusAssign(userPhoneKey)
             it.minusAssign(carIdKey)
             it.minusAssign(userCarsKey)
             it.minusAssign(userChatID)
@@ -80,6 +135,11 @@ class UserCacheImpl(
     companion object {
         val userIdKey = stringPreferencesKey("userId")
         val userRoleKey = stringPreferencesKey("userRole")
+        val userFirstNameKey = stringPreferencesKey("firstName")
+        val userLastNameKey = stringPreferencesKey("lastName")
+        val userAddressKey = stringPreferencesKey("address")
+        val userEmailKey = stringPreferencesKey("email")
+        val userPhoneKey = stringPreferencesKey("phone")
         val carIdKey = stringPreferencesKey("carId")
         val userCarsKey = stringPreferencesKey("userCars")
         val userChatID = stringPreferencesKey("userChatID")

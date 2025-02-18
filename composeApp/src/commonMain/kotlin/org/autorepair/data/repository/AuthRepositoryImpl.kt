@@ -22,7 +22,7 @@ class AuthRepositoryImpl(
             val result = auth.createUserWithEmailAndPassword(email, password)
             val resultUser = result.user
             return if (resultUser != null) {
-                Result.success(User(resultUser.uid, resultUser.getRole()))
+                Result.success(User(id = resultUser.uid, role = resultUser.getRole(), email = email))
             } else {
                 Result.failure(IncorrectDataException())
             }
